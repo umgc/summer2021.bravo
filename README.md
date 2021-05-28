@@ -4,8 +4,7 @@
 
 ## DevOps
 - Rob Wilson
+- Michelle Monfort
 
 ## Team Bravo
-
 - 
-## Update by Michelle Monfort
