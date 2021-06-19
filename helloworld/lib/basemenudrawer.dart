@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-/*
-* Base menu for all pages
-*/
+/// Base menu for all pages
 class BaseMenuDrawer extends StatelessWidget {
   final Color backgroundColor = Colors.blue;
 
@@ -25,6 +23,13 @@ class BaseMenuDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/');
+            },
+          ),
+          ListTile(
+            title: Text('Save Note'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/save-note');
             },
           ),
           ListTile(

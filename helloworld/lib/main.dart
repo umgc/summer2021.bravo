@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './savenote.dart';
 import './viewnotes.dart';
 import './basemenudrawer.dart';
 
@@ -6,15 +7,13 @@ void main() {
   runApp(MyApp());
 }
 
-/*
-* Home page
-*/
+/// Home page
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Harkify',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -30,6 +29,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: "Harkify"),
+        '/save-note': (context) => SaveNote(),
         '/view-notes': (context) => ViewNotes(),
       },
     );
@@ -104,18 +104,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              'Welcome to Harkify!',
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+          Navigator.pushNamed(context, '/save-note');
+        },
+        tooltip: 'Save Note',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
