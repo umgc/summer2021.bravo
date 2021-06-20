@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:intl/intl.dart';
 
 /// View Notes page
 class ViewNotes extends StatefulWidget {
@@ -12,7 +13,11 @@ class ViewNotes extends StatefulWidget {
 }
 
 class _ViewNotesState extends State<ViewNotes> {
+  // Search bar to insert in the app bar header
   late SearchBar searchBar;
+
+  /// Date format to use when
+  static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
 
   _ViewNotesState() {
     searchBar = new SearchBar(
@@ -38,7 +43,7 @@ class _ViewNotesState extends State<ViewNotes> {
               drawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(10),
                   child: SingleChildScrollView(
                     child: textNotes.data == null || textNotes.data?.length == 0
                         // No text notes found, tell user
@@ -48,8 +53,9 @@ class _ViewNotesState extends State<ViewNotes> {
                         : Table(
                             border: TableBorder.all(),
                             columnWidths: const <int, TableColumnWidth>{
-                              0: FlexColumnWidth(.4),
-                              1: FlexColumnWidth()
+                              0: FlexColumnWidth(.45),
+                              1: FlexColumnWidth(.2),
+                              2: FlexColumnWidth()
                             },
                             defaultVerticalAlignment:
                                 TableCellVerticalAlignment.middle,
@@ -66,6 +72,15 @@ class _ViewNotesState extends State<ViewNotes> {
                                           padding: EdgeInsets.all(10),
                                           child: Text(
                                             'DATE',
+                                          )),
+                                    ),
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.top,
+                                      child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Text(
+                                            'FAV',
                                           )),
                                     ),
                                     TableCell(
@@ -91,9 +106,23 @@ class _ViewNotesState extends State<ViewNotes> {
                                         child: Container(
                                             padding: EdgeInsets.all(10),
                                             child: Text(
-                                              textNote.dateTime?.toString() ??
-                                                  "",
+                                              dateFormat
+                                                  .format(textNote.dateTime),
                                             )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.top,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                              context, '/save-note');
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            child: textNote.isFavorite
+                                                ? Icon(Icons.favorite)
+                                                : Text("")),
                                       )),
                                   TableCell(
                                       verticalAlignment:

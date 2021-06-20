@@ -28,7 +28,7 @@ class _SaveNoteState extends State<SaveNote> {
         title: new Text('Save Note'),
       ),
       body: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(10),
           child: Column(
             children: [
               TextField(
@@ -49,7 +49,7 @@ class _SaveNoteState extends State<SaveNote> {
                 ),
                 onPressed: () {
                   if (textController.text.length > 0) {
-                    TextNoteService.saveTextFile(textController.text);
+                    TextNoteService.saveTextFile(textController.text, false);
                     showConfirmDialog(context);
                   }
                 },
