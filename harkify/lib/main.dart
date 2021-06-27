@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'notedetails.dart';
 import 'savenote.dart';
 import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'basemenudrawer.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -20,14 +22,17 @@ class MyApp extends StatelessWidget {
         // This is the theme of your application.
         primarySwatch: Colors.deepPurple,
       ),
+
       //left this for convenience of reviewer, needs to be changed
       initialRoute: '/note-details',
+
       routes: {
         '/': (context) => MyHomePage(title: "Harkify"),
         '/save-note': (context) => SaveNote(),
         '/view-notes': (context) => ViewNotes(),
         '/note-details': (context) => NoteDetails(),
         '/record-notes': (context) => SpeechScreen(),
+
       },
     );
   }

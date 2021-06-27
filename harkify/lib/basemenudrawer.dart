@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Base menu for all pages
 class BaseMenuDrawer extends StatelessWidget {
+  
   final Color backgroundColor = Colors.deepPurpleAccent;
 
   const BaseMenuDrawer() : super();
