@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Base menu for all pages
 class BaseMenuDrawer extends StatelessWidget {
-  final Color backgroundColor = Colors.blue;
+  
+  final Color backgroundColor = Colors.deepPurpleAccent;
 
   const BaseMenuDrawer() : super();
 
@@ -12,12 +13,14 @@ class BaseMenuDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-            ),
-            child: Text('Menu'),
-          ),
+          Container(
+              height: 50.0,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                ),
+                child: Text('Menu', style: TextStyle(color: Colors.white)),
+              )),
           ListTile(
             title: Text('Home'),
             onTap: () {
@@ -37,6 +40,13 @@ class BaseMenuDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/view-notes');
+            },
+          ),
+          ListTile(
+            title: Text('Record Note'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/record-notes');
             },
           ),
         ],
