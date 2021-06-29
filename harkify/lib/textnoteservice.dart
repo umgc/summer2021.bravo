@@ -9,7 +9,11 @@ class TextNoteService {
 
   /// Returns the correct file directory for all text notes
   static Future<Directory> _getTextNotesDirectory() async {
-    final Directory docsDirectory = await getApplicationDocumentsDirectory();
+    Directory docsDirectory = new Directory(".");
+    try {
+      // Docs folder only available for Android and IOS, not unit tests
+      docsDirectory = await getApplicationDocumentsDirectory();
+    } catch (MissingPluginException) {}
     final notesDirectory = new Directory('${docsDirectory.path}/harkify');
     notesDirectory.createSync();
     return notesDirectory;
@@ -27,10 +31,14 @@ class TextNoteService {
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
       String newFileName = _getNewFileName();
+      int dateStartsAt = newFileName.lastIndexOf("_");
+      String? datePortionOfName = newFileName.substring(dateStartsAt + 1);
       final File file = File('${textNotesDirectory.path}/$newFileName');
 
       String textNoteXml = '''<?xml version="1.0"?>
         <text-note>
+          <file-name>$newFileName</<file-name>
+          <when-recorded>$datePortionOfName</when-recorded>        
           <is-favorite>$isFavorite</is-favorite>
           <text>$text</text>
         </text-note>''';
@@ -44,7 +52,8 @@ class TextNoteService {
   /// Return a text note object, specified by file name
   static Future<TextNote> getTextFile(String fileName) async {
     try {
-      final File file = File('$fileName');
+      var textNotesDirectory = await _getTextNotesDirectory();
+      final File file = File('${textNotesDirectory.path}/$fileName');
       String fileText = file.readAsStringSync();
       final document = XmlDocument.parse(fileText);
 
@@ -57,13 +66,18 @@ class TextNoteService {
               ?.getElement("is-favorite")
               ?.innerText ==
           "true";
-      return new TextNote(fileName, text, isFavorite);
+      DateTime? whenRecorded = DateTime.tryParse(document
+              .getElement("text-note")
+              ?.getElement("when-recorded")
+              ?.innerText ??
+          "");
+      return new TextNote(fileName, whenRecorded, text, isFavorite);
     } catch (e) {
       print("ERROR-Couldn't read file: ${e.toString()}");
     }
 
     // Should only get here if there's an error, so we don't care about the text note
-    return TextNote(fileName, "(Could not read file)", false);
+    return TextNote(fileName, DateTime.now(), "(Could not read file)", false);
   }
 
   /// Return a list of all saved text files
@@ -76,7 +90,8 @@ class TextNoteService {
           in textNotesDirectory.list(recursive: false, followLinks: false)) {
         if (!entity.path.contains("textnote_")) continue;
 
-        var textNote = await getTextFile(entity.path);
+        var fileName = entity.path.substring(entity.path.indexOf("textnote_"));
+        var textNote = await getTextFile(fileName);
         if ((textNote.text?.length ?? 0) > teaserLength) {
           textNote.text =
               (textNote.text ?? "").substring(0, teaserLength).trimRight() +
@@ -100,7 +115,7 @@ class TextNote {
   /// Name of the text note file
   String? fileName;
 
-  /// Date and time when the text note was saved
+  /// Date and time when the text note was recorded
   DateTime? dateTime;
 
   /// Actual text of the text note
@@ -110,11 +125,5 @@ class TextNote {
   bool isFavorite = false;
 
   /// Constructor takes file name and text
-  TextNote(this.fileName, this.text, this.isFavorite) {
-    if (this.fileName != null) {
-      int dateStartsAt = this.fileName?.lastIndexOf("_") ?? 0;
-      String? datePortionOfName = this.fileName?.substring(dateStartsAt + 1);
-      this.dateTime = DateTime.tryParse(datePortionOfName ?? "");
-    }
-  }
+  TextNote(this.fileName, this.dateTime, this.text, this.isFavorite) {}
 }
