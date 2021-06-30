@@ -37,8 +37,8 @@ jobs:
       # Add formating standards
       - run: flutter pub add --dev effective_dart 
         # <- Based on pubspec.yaml file of project
-      - run: cd ./harkify
-      - run: flutter pub get 
+      - run: | cd ./harkify
+        flutter pub get 
         # <- Based on pubspec.yaml file of project
 
       # Analyze
