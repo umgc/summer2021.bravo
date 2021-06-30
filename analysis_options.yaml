@@ -1,2 +1,1 @@
-## Analysis file to include dart in sonarcloud check
 include: package:effective_dart/analysis_options.yaml
