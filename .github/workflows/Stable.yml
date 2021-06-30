@@ -57,18 +57,15 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: cd ./harkify
-      - run: flutter pub get 
+      - run: cd ./harkify  flutter pub get 
         # <- Based on pubspec.yaml file of project
         
       - name: Build APK
-      - run: cd ./harkify
-      - run: flutter build apk 
+      - run: cd ./harkify flutter build apk 
         # <- Based on pubspec.yaml file of project
         
       - name: Build Web
-      - run: cd ./harkify
-      - run: flutter build web 
+      - run: cd ./harkify flutter build web 
         # <- Based on pubspec.yaml file of project
         
       - name: SonarCloud Scan
@@ -98,9 +95,7 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: cd ./harkify
-      - run: flutter pub get # <- Based on pubspec.yaml file of project
+      - run: cd ./harkify flutter pub get # <- Based on pubspec.yaml file of project
       
       - name: Run tests
-      - run: cd ./harkify
-      - run: flutter test # <- Based on pubspec.yaml file of project
+      - run: cd ./harkify flutter test # <- Based on pubspec.yaml file of project
