@@ -38,7 +38,7 @@ jobs:
       - run: flutter pub add --dev effective_dart 
         # <- Based on pubspec.yaml file of project
       - run: | cd ./harkify
-        flutter pub get 
+      - run: flutter pub get 
         # <- Based on pubspec.yaml file of project
 
       # Analyze
