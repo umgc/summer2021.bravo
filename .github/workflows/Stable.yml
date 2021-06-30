@@ -51,7 +51,7 @@ jobs:
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -88,7 +88,9 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: cd ./harkify flutter pub get # <- Based on pubspec.yaml file of project
+      - run: | cd ./harkify 
+      flutter pub get # <- Based on pubspec.yaml file of project
       
       - name: Run tests
-      - run: cd ./harkify flutter test # <- Based on pubspec.yaml file of project
+      - run: | cd ./harkify 
+      flutter test # <- Based on pubspec.yaml file of project
