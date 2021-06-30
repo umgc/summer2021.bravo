@@ -3,6 +3,14 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+
+# Readme - Actions work from a temporary directory. If the repo's project is not in root repo folder
+# there must be a cd ./<directory where project is> ran for each command annotated.
+# <- hash here specifies comments and should be excluded from example below.
+# To specify multiple command -> run: |
+#                                     Then 1st command
+#                                     Then 2nd command
+
 name: Stable Linter, Build, Unit Test
 
 env:
@@ -27,8 +35,8 @@ jobs:
         uses: subosito/flutter-action@v1
         
       # Add formating standards
-      - run: flutter pub add --dev effective_dart
-      - run: flutter pub get
+      - run: flutter pub add --dev effective_dart # <- Based on pubspec.yaml file of project
+      - run: flutter pub get # <- Based on pubspec.yaml file of project
 
       # Analyze
       - name: Analyze Flutter
@@ -47,13 +55,13 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: flutter pub get
+      - run: flutter pub get # <- Based on pubspec.yaml file of project
         
       - name: Build APK
-        run: flutter build apk
+        run: flutter build apk # <- Based on pubspec.yaml file of project
         
       - name: Build Web
-        run: flutter build web
+        run: flutter build web # <- Based on pubspec.yaml file of project
         
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -64,14 +72,14 @@ jobs:
       - name: 'Upload APK Artifact'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: hello-flutter-apk-${{env.FLUTTER_VERSION}}
+          name: hello-flutter-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
           path: build/app/outputs/flutter-apk/*.apk
           
       - name: 'Upload Web Artifacts'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: hello-flutter-web-${{env.FLUTTER_VERSION}}
-          path: build/web/**/*.*
+          name: hello-flutter-web-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          path: build/web/**/*.* # <- Based on pubspec.yaml file of project
         
   test:
     name: Run Unit Tests
@@ -82,7 +90,7 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: flutter pub get
+      - run: flutter pub get # <- Based on pubspec.yaml file of project
       
       - name: Run tests
-        run: flutter test
+        run: flutter test # <- Based on pubspec.yaml file of project
