@@ -35,8 +35,12 @@ jobs:
         uses: subosito/flutter-action@v1
         
       # Add formating standards
-      - run: flutter pub add --dev effective_dart # <- Based on pubspec.yaml file of project
-      - run: flutter pub get # <- Based on pubspec.yaml file of project
+      - run:  |
+        cd ./harkify 
+      flutter pub add --dev effective_dart # <- Based on pubspec.yaml file of project
+      - run:  |
+        cd ./harkify
+        flutter pub get # <- Based on pubspec.yaml file of project
 
       # Analyze
       - name: Analyze Flutter
@@ -55,13 +59,19 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: flutter pub get # <- Based on pubspec.yaml file of project
+      - run:  |
+        cd ./harkify
+        flutter pub get # <- Based on pubspec.yaml file of project
         
       - name: Build APK
-        run: flutter build apk # <- Based on pubspec.yaml file of project
+        - run:  |
+        cd ./harkify
+        flutter build apk # <- Based on pubspec.yaml file of project
         
       - name: Build Web
-        run: flutter build web # <- Based on pubspec.yaml file of project
+       - run:  |
+        cd ./harkify
+        flutter build web # <- Based on pubspec.yaml file of project
         
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -90,7 +100,11 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: flutter pub get # <- Based on pubspec.yaml file of project
+      - run:  |
+        cd ./harkify
+      flutter pub get # <- Based on pubspec.yaml file of project
       
       - name: Run tests
-        run: flutter test # <- Based on pubspec.yaml file of project
+      - run:  |
+        cd ./harkify
+        flutter test # <- Based on pubspec.yaml file of project
