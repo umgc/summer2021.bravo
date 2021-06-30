@@ -35,12 +35,12 @@ jobs:
         uses: subosito/flutter-action@v1
         
       # Add formating standards
-      - run:  |
-        cd ./harkify 
-        flutter pub add --dev effective_dart # <- Based on pubspec.yaml file of project
-      - run:  |
-        cd ./harkify
-        flutter pub get # <- Based on pubspec.yaml file of project
+      - run: flutter pub add --dev effective_dart 
+        # <- Based on pubspec.yaml file of project
+      - run: |
+         cd ./harkify
+          flutter pub get 
+        # <- Based on pubspec.yaml file of project
 
       # Analyze
       - name: Analyze Flutter
@@ -61,17 +61,20 @@ jobs:
         uses: subosito/flutter-action@v1
       - run:  |
         cd ./harkify
-        flutter pub get # <- Based on pubspec.yaml file of project
+        flutter pub get 
+        # <- Based on pubspec.yaml file of project
         
       - name: Build APK
         - run:  |
         cd ./harkify
-        flutter build apk # <- Based on pubspec.yaml file of project
+        flutter build apk 
+        # <- Based on pubspec.yaml file of project
         
       - name: Build Web
        - run:  |
         cd ./harkify
-        flutter build web # <- Based on pubspec.yaml file of project
+        flutter build web 
+        # <- Based on pubspec.yaml file of project
         
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -82,13 +85,13 @@ jobs:
       - name: 'Upload APK Artifact'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: hello-flutter-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          name: harkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
           path: build/app/outputs/flutter-apk/*.apk
           
       - name: 'Upload Web Artifacts'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: hello-flutter-web-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          name: harkify-web-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
           path: build/web/**/*.* # <- Based on pubspec.yaml file of project
         
   test:
