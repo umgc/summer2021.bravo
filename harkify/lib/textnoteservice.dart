@@ -1,59 +1,116 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart';
-import 'dart:io';
+import 'package:file/file.dart';
+import 'package:file/local.dart';
 
 /// Encapsulates all file I/O for text notes
 class TextNoteService {
   /// Maximum length for teaser excerpt from text note, shown in View Notes list
   static final teaserLength = 100;
 
+  /// The file system to use for all I/O operations. Generally LocalFileSystem()
+  /// but MemoryFileSystem() is used when running unit tests.
+  FileSystem fileSystem;
+
+  /// Constructor initializes FileSystem
+  TextNoteService({this.fileSystem = const LocalFileSystem()});
+
   /// Returns the correct file directory for all text notes
-  static Future<Directory> _getTextNotesDirectory() async {
-    Directory docsDirectory = new Directory(".");
+  Future<Directory> _getTextNotesDirectory() async {
+    var docsDirectory = fileSystem.directory(".");
+
     try {
-      // Docs folder only available for Android and IOS, not unit tests
-      docsDirectory = await getApplicationDocumentsDirectory();
+      if (fileSystem is LocalFileSystem) {
+        // Docs folder only available for Android and IOS, not unit tests
+        var docsPath = (await getApplicationDocumentsDirectory()).path;
+        docsDirectory = fileSystem.directory(docsPath);
+
+        final notesDirectory =
+            fileSystem.directory('${docsDirectory.path}/harkify');
+        notesDirectory.createSync();
+        return notesDirectory;
+      }
     } catch (MissingPluginException) {}
-    final notesDirectory = new Directory('${docsDirectory.path}/harkify');
-    notesDirectory.createSync();
-    return notesDirectory;
+
+    // With unit tests, use a temp folder
+    //docsDirectory = await fileSystem.systemTempDirectory.createTemp('harkify');
+    return docsDirectory;
   }
 
   /// Returns the proper text file name based on the current date/time
-  static String _getNewFileName() {
+  String _getNewFileName() {
     var now = DateTime.now();
     String fileName = now.toString();
     return "textnote_" + fileName;
   }
 
   /// Save a text note file to local storage
-  static saveTextFile(String text, bool isFavorite) async {
+  Future<String> saveTextFile(String text, bool isFavorite) async {
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
       String newFileName = _getNewFileName();
       int dateStartsAt = newFileName.lastIndexOf("_");
       String? datePortionOfName = newFileName.substring(dateStartsAt + 1);
-      final File file = File('${textNotesDirectory.path}/$newFileName');
+      final File file =
+          fileSystem.file('${textNotesDirectory.path}/$newFileName');
 
       String textNoteXml = '''<?xml version="1.0"?>
         <text-note>
-          <file-name>$newFileName</<file-name>
+          <file-name>$newFileName</file-name>
           <when-recorded>$datePortionOfName</when-recorded>        
           <is-favorite>$isFavorite</is-favorite>
           <text>$text</text>
         </text-note>''';
       await file.writeAsString(textNoteXml);
       print("File saved: ${file.path}");
+      return newFileName;
     } catch (e) {
       print("ERROR-Couldn't save file: ${e.toString()}");
+    }
+
+    return "";
+  }
+
+  /// Update a text note file to local storage
+  updateTextFile(TextNote updatedNote) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      var fileName = updatedNote.fileName;
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+
+      String textNoteXml = '''<?xml version="1.0"?>
+        <text-note>
+          <file-name>$fileName</<file-name>
+          <when-recorded>${updatedNote.dateTime.toString()}</when-recorded>        
+          <is-favorite>${updatedNote.isFavorite}</is-favorite>
+          <text>${updatedNote.text}</text>
+        </text-note>''';
+      await file.writeAsString(textNoteXml);
+      print("File saved: ${file.path}");
+    } catch (e) {
+      print("ERROR-Couldn't update file: ${e.toString()}");
+    }
+  }
+
+  /// Delete a text note file in local storage
+  deleteTextFile(TextNote updatedNote) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      var fileName = updatedNote.fileName;
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+
+      await file.delete();
+      print("File deleted: ${file.path}");
+    } catch (e) {
+      print("ERROR-Couldn't delete file: ${e.toString()}");
     }
   }
 
   /// Return a text note object, specified by file name
-  static Future<TextNote> getTextFile(String fileName) async {
+  Future<TextNote> getTextFile(String fileName) async {
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
-      final File file = File('${textNotesDirectory.path}/$fileName');
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
       String fileText = file.readAsStringSync();
       final document = XmlDocument.parse(fileText);
 
@@ -81,7 +138,7 @@ class TextNoteService {
   }
 
   /// Return a list of all saved text files
-  static Future<List<dynamic>> getTextFileList() async {
+  Future<List<dynamic>> getTextFileList() async {
     List textFileList = <TextNote>[];
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
@@ -124,6 +181,6 @@ class TextNote {
   /// Whether or not this text file is flagged as a favorite
   bool isFavorite = false;
 
-  /// Constructor takes file name and text
-  TextNote(this.fileName, this.dateTime, this.text, this.isFavorite) {}
+  /// Constructor takes all properties as params
+  TextNote(this.fileName, this.dateTime, this.text, this.isFavorite);
 }

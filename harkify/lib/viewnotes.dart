@@ -19,6 +19,9 @@ class _ViewNotesState extends State<ViewNotes> {
   /// Date format to use when
   static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
 
+  /// Text note service to use for I/O operations against local system
+  final TextNoteService textNoteService = new TextNoteService();
+
   _ViewNotesState() {
     searchBar = new SearchBar(
         inBar: false,
@@ -36,7 +39,7 @@ class _ViewNotesState extends State<ViewNotes> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: TextNoteService.getTextFileList(),
+        future: textNoteService.getTextFileList(),
         builder: (context, AsyncSnapshot<List<dynamic>> textNotes) {
           if (textNotes.hasData) {
             return Scaffold(
