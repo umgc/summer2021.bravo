@@ -80,7 +80,7 @@ class TextNoteService {
 
       String textNoteXml = '''<?xml version="1.0"?>
         <text-note>
-          <file-name>$fileName</<file-name>
+          <file-name>$fileName</file-name>
           <when-recorded>${updatedNote.dateTime.toString()}</when-recorded>        
           <is-favorite>${updatedNote.isFavorite}</is-favorite>
           <text>${updatedNote.text}</text>

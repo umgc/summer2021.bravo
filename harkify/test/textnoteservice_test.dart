@@ -71,6 +71,29 @@ void main() {
         "The quick, brown fox jumps over the lazy dog 1 2 3 4 5 6 7 8 9 0.");
   });
 
+  test('Text note should be updated', () async {
+    prepForTests();
+    DateTime rightNow = DateTime.now().add(const Duration(seconds: -1));
+    String filename = await textNoteService.saveTextFile(
+        "The quick, brown fox jumps over the lazy dog 1 2 3 4 5 6 7 8 9 0.",
+        false);
+
+    TextNote textNote = await textNoteService.getTextFile(filename);
+    textNote.isFavorite = true;
+    textNote.text =
+        "Twas brillig, and the slithy toves did gyre and gimble in the wabe.";
+    await textNoteService.updateTextFile(textNote);
+
+    TextNote updatedNote = await textNoteService.getTextFile(filename);
+
+    // The text note retrieved should match the one updated above
+    expect(updatedNote.fileName, filename);
+    expect(rightNow.compareTo(updatedNote.dateTime ?? DateTime.now()), -1);
+    expect(updatedNote.isFavorite, true);
+    expect(updatedNote.text,
+        "Twas brillig, and the slithy toves did gyre and gimble in the wabe.");
+  });
+
   test('Text note should be deleted', () async {
     prepForTests();
     DateTime rightNow = DateTime.now().add(const Duration(seconds: -1));
