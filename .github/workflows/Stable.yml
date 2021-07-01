@@ -102,6 +102,6 @@ jobs:
       flutter pub get 
       
       - name: Run tests
-      - run: |
-      cd ./harkify
-      flutter test # <- Based on pubspec.yaml file of project
+        run: |
+        cd ./harkify
+        flutter test # <- Based on pubspec.yaml file of project
