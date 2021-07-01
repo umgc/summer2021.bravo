@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'basemenudrawer.dart';
 
 class SpeechScreen extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class SpeechScreen extends StatefulWidget {
 class _SpeechScreenState extends State<SpeechScreen> {
   final SpeechToText _speech = SpeechToText();
   bool _isListening = false;
-  String _textSpeech = 'Please press the mic button to start speaking.';
+  String _textSpeech = 'Press the mic button to start';
 
   void onListen() async {
     if (!_isListening) {
@@ -45,7 +46,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Harkify')),
+      drawer: BaseMenuDrawer(),
+      appBar: AppBar(title: Text('Record a Note')),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AvatarGlow(
         animate: _isListening,
