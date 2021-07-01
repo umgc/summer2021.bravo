@@ -82,7 +82,7 @@ jobs:
       - name: 'Upload APK Artifact'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: haarkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          name: harkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
           path: ./harkify/build/app/outputs/flutter-apk/*.apk
           
       - name: 'Upload Web Artifacts'
