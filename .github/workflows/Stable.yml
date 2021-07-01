@@ -35,8 +35,7 @@ jobs:
         uses: subosito/flutter-action@v1
         
       # Add formating standards
-      - run: flutter pub add --dev effective_dart 
-        # <- Based on pubspec.yaml file of project
+      - run: flutter pub add --dev effective_dart  # <- Based on pubspec.yaml file of project
       - run: |
       cd ./harkify
       flutter pub get # <- Based on pubspec.yaml file of project
@@ -47,24 +46,29 @@ jobs:
         with:
           fail-on: "format"
 
-  build:
-    name: Build
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-jobs:
-  sonarcloud:
-    name: SonarCloud
+    build:
+    name: Build Project
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-    
-    - name: SonarCloud Scan
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+      - run: flutter pub get
+        
+      - name: Build APK
+        run: flutter build apk
+      
+      # Build web version for code analysis.
+      - name: Build Web
+        run: flutter build web
+        
+      # Conduct SonarCloud code analysis on web outputs.
+      # SonarCloud, at this time, does not support Dart.
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -79,7 +83,7 @@ jobs:
       - name: 'Upload Web Artifacts'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: harkify-web-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          name: harkify-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
           path: build/web/**/*.* # <- Based on pubspec.yaml file of project
         
   test:
@@ -93,7 +97,7 @@ jobs:
         uses: subosito/flutter-action@v1
       - run: |
       cd ./harkify
-      flutter pub get # <- Based on pubspec.yaml file of project
+      flutter pub get 
       
       - name: Run tests
       - run: |
