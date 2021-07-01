@@ -86,7 +86,7 @@ jobs:
         uses: 'actions/upload-artifact@v2'
         with:
           name: harkify-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
-          path: ./harkify/build/web/**/*.* # <- Based on pubspec.yaml file of project
+          path: /harkify/build/web/**/*.* # <- Based on pubspec.yaml file of project
         
   test:
     name: Run Unit Tests
