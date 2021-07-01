@@ -35,20 +35,16 @@ jobs:
         uses: subosito/flutter-action@v1
         
       # Add formating standards
-      - run: |
-          cd ./harkify
-          flutter pub add --dev effective_dart  # <- Based on pubspec.yaml file of project
-      - run: |
-          cd ./harkify
-          flutter pub get # <- Based on pubspec.yaml file of project
+      - run: flutter pub add --dev effective_dart # <- Based on pubspec.yaml file of project
+      - run: flutter pub get # <- Based on pubspec.yaml file of project
 
       # Analyze
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.11
         with:
-          fail-on: "format"
+          fail-on: "analyze"
 
-    build:
+  build:
     name: Build Project
     runs-on: ubuntu-latest
 
@@ -59,34 +55,35 @@ jobs:
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
-      - run: flutter pub get
+      - run: |
+        cd ./harkify
+        flutter pub get # <- Based on pubspec.yaml file of project
         
       - name: Build APK
-        run: flutter build apk
-      
-      # Build web version for code analysis.
-      - name: Build Web
-        run: flutter build web
+        run: |
+        cd ./harkify
+        flutter build apk # <- Based on pubspec.yaml file of project
         
-      # Conduct SonarCloud code analysis on web outputs.
-      # SonarCloud, at this time, does not support Dart.
+      - name: Build Web
+        run: flutter build web # <- Based on pubspec.yaml file of project
+        
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          
+     
       - name: 'Upload APK Artifact'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: harkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
-          path: /build/app/outputs/flutter-apk/*.apk
+          name: haarkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          path: ./harkify/build/app/outputs/flutter-apk/*.apk
           
       - name: 'Upload Web Artifacts'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: harkify-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
-          path: /harkify/build/web/**/*.* # <- Based on pubspec.yaml file of project
+          name: harkify-web-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          path: ./harkify/build/web/**/*.* # <- Based on pubspec.yaml file of project
         
   test:
     name: Run Unit Tests
@@ -98,10 +95,10 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
       - run: |
-          cd ./harkify
-          flutter pub get 
+        cd ./harkify
+        flutter pub get
       
       - name: Run tests
-      - run: |
+        run: |
           cd ./harkify
-          flutter test # <- Based on pubspec.yaml file of project
+          flutter test
