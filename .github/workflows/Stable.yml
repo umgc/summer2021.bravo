@@ -86,7 +86,7 @@ jobs:
         uses: 'actions/upload-artifact@v2'
         with:
           name: harkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
-          path: .harkify/build/app/outputs/flutter-apk/*.apk
+          path: ./harkify/build/app/outputs/flutter-apk/*.apk
           
       - name: 'Upload Web Artifacts'
         uses: 'actions/upload-artifact@v2'
