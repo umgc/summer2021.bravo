@@ -107,5 +107,4 @@ jobs:
       - name: Run tests
         run: |
           cd ./harkify 
-          cd ./test
           flutter test
