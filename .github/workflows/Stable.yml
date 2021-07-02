@@ -68,14 +68,11 @@ jobs:
            cd ./harkify
            flutter build apk
       
-      # Build web version for code analysis.
       - name: Build Web
         run: |
           cd ./harkify
           flutter build web
-        
-      # Conduct SonarCloud code analysis on web outputs.
-      # SonarCloud, at this time, does not support Dart.
+ 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -108,6 +105,6 @@ jobs:
           flutter pub get 
       
       - name: Run tests
-      - run: |
+        run: |
           cd ./harkify
-          flutter test # <- Based on pubspec.yaml file of project
+          flutter test 
