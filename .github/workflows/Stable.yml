@@ -105,4 +105,7 @@ jobs:
           flutter pub get 
       
       - name: Run tests
-        run: flutter test
+        run: |
+          cd ./harkify 
+          cd ./test
+          flutter test
