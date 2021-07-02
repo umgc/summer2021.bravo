@@ -6,7 +6,6 @@ import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'basemenudrawer.dart';
 
-
 void main() {
   runApp(MyApp());
 }
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
       ),
 
       //left this for convenience of reviewer, needs to be changed
-      initialRoute: '/note-details',
+      initialRoute: '/record-notes',
 
       routes: {
         '/': (context) => MyHomePage(title: "Harkify"),
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
         '/view-notes': (context) => ViewNotes(),
         '/note-details': (context) => NoteDetails(),
         '/record-notes': (context) => SpeechScreen(),
-
       },
     );
   }

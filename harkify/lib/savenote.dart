@@ -11,6 +11,9 @@ class SaveNote extends StatefulWidget {
 }
 
 class _SaveNoteState extends State<SaveNote> {
+  /// Text note service to use for I/O operations against local system
+  final TextNoteService textNoteService = new TextNoteService();
+
   final textController = TextEditingController();
   _SaveNoteState();
 
@@ -49,7 +52,7 @@ class _SaveNoteState extends State<SaveNote> {
                 ),
                 onPressed: () {
                   if (textController.text.length > 0) {
-                    TextNoteService.saveTextFile(textController.text, false);
+                    textNoteService.saveTextFile(textController.text, false);
                     showConfirmDialog(context);
                   }
                 },
@@ -66,8 +69,7 @@ class _SaveNoteState extends State<SaveNote> {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context).pop();
-        textController.text = "";
+        Navigator.pushNamed(context, '/view-notes');
       },
     );
 
