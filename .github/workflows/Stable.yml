@@ -37,18 +37,18 @@ jobs:
       # Add formating standards
       - run: |
           cd ./harkify
-          flutter pub add --dev effective_dart  # <- Based on pubspec.yaml file of project
+          flutter pub add --dev effective_dart  
       - run: |
           cd ./harkify
-          flutter pub get # <- Based on pubspec.yaml file of project
-
+          flutter pub get
+          
       # Analyze
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.11
         with:
-          fail-on: "format"
+          fail-on: "analyze"
 
-    build:
+  build:
     name: Build Project
     runs-on: ubuntu-latest
 
@@ -58,15 +58,21 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       
       - name: Set up Flutter
-        uses: subosito/flutter-action@v1
-      - run: flutter pub get
+      uses: subosito/flutter-action@v1
+    - run: |
+      cd ./harkify
+          flutter pub get
         
       - name: Build APK
-        run: flutter build apk
+        - run: |
+           cd ./harkify
+           flutter build apk
       
       # Build web version for code analysis.
       - name: Build Web
-        run: flutter build web
+        -run: |
+          cd ./harkify
+          flutter build web
         
       # Conduct SonarCloud code analysis on web outputs.
       # SonarCloud, at this time, does not support Dart.
