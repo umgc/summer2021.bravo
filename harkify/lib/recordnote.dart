@@ -12,7 +12,7 @@ class SpeechScreen extends StatefulWidget {
 
 class _SpeechScreenState extends State<SpeechScreen> {
   final SpeechToText _speech = SpeechToText();
-  final VoiceHelper _helper = VoiceHelper();
+  //final VoiceHelper _helper = VoiceHelper();
 
   bool _isListening = false;
   String _textSpeech = 'Press the mic button to start';
