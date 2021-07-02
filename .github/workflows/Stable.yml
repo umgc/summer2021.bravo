@@ -58,19 +58,19 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       
       - name: Set up Flutter
-      uses: subosito/flutter-action@v1
-    - run: |
-      cd ./harkify
+        uses: subosito/flutter-action@v1
+      - run: |
+          cd ./harkify
           flutter pub get
         
       - name: Build APK
-        - run: |
+        run: |
            cd ./harkify
            flutter build apk
       
       # Build web version for code analysis.
       - name: Build Web
-        -run: |
+        run: |
           cd ./harkify
           flutter build web
         
@@ -86,13 +86,13 @@ jobs:
         uses: 'actions/upload-artifact@v2'
         with:
           name: harkify-apk-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
-          path: /build/app/outputs/flutter-apk/*.apk
+          path: .harkify/build/app/outputs/flutter-apk/*.apk
           
       - name: 'Upload Web Artifacts'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: harkify-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
-          path: /harkify/build/web/**/*.* # <- Based on pubspec.yaml file of project
+          name: harkify-web-${{env.FLUTTER_VERSION}} # <- Replace hello-flutter with name of application
+          path: ./harkify/build/web/**/*.* # <- Based on pubspec.yaml file of project
         
   test:
     name: Run Unit Tests
