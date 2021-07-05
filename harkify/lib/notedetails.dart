@@ -80,7 +80,6 @@ class _NoteDetailssState extends State<NoteDetails> {
                                     //passed date String should display here - Alec
                                     dateFormat
                                         .format(selectedNote.data.dateTime),
-                                    // dateString[0] + ":" + dateString[1],
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,

@@ -32,8 +32,7 @@ class TextNoteService {
       }
     } catch (MissingPluginException) {}
 
-    // With unit tests, use a temp folder
-    //docsDirectory = await fileSystem.systemTempDirectory.createTemp('harkify');
+  
     return docsDirectory;
   }
 
