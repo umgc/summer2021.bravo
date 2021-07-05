@@ -1,4 +1,4 @@
-package com.bravo.harkify
+package com.example.harkify
 
 import io.flutter.embedding.android.FlutterActivity
 
