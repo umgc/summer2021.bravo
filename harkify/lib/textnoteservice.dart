@@ -2,11 +2,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
+import 'package:encrypt/encrypt.dart';
 
 /// Encapsulates all file I/O for text notes
 class TextNoteService {
   /// Maximum length for teaser excerpt from text note, shown in View Notes list
   static final teaserLength = 100;
+
+  /// Encryption key to use in encrypting and decrypting text notes
+  final _encryptionKey = 'b4CplJtMrcfEg7LJhL2dZyEwgvHP/75w';
 
   /// The file system to use for all I/O operations. Generally LocalFileSystem()
   /// but MemoryFileSystem() is used when running unit tests.
@@ -32,7 +36,6 @@ class TextNoteService {
       }
     } catch (MissingPluginException) {}
 
-  
     return docsDirectory;
   }
 
@@ -41,6 +44,25 @@ class TextNoteService {
     var now = DateTime.now();
     String fileName = now.toString();
     return "textnote_" + fileName;
+  }
+
+  /// Encrypt a plain text note and serialize it as a base-64 string
+  String _encryptNote(plainNote) {
+    final key = Key.fromUtf8(_encryptionKey);
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(key));
+    final encryptedNote = encrypter.encrypt(plainNote, iv: iv);
+    return encryptedNote.base64;
+  }
+
+  /// Decrypt an encrypted text note serialized as a base-64 string
+  String _decryptNote(base64Note) {
+    final key = Key.fromUtf8(_encryptionKey);
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(key));
+    final encryptedNote = Encrypted.fromBase64(base64Note);
+    final decryptedNote = encrypter.decrypt(encryptedNote, iv: iv);
+    return decryptedNote;
   }
 
   /// Save a text note file to local storage
@@ -60,7 +82,9 @@ class TextNoteService {
           <is-favorite>$isFavorite</is-favorite>
           <text>$text</text>
         </text-note>''';
-      await file.writeAsString(textNoteXml);
+
+      final encryptedNote = _encryptNote(textNoteXml);
+      await file.writeAsString(encryptedNote);
       print("File saved: ${file.path}");
       return newFileName;
     } catch (e) {
@@ -84,7 +108,8 @@ class TextNoteService {
           <is-favorite>${updatedNote.isFavorite}</is-favorite>
           <text>${updatedNote.text}</text>
         </text-note>''';
-      await file.writeAsString(textNoteXml);
+      final encryptedNote = _encryptNote(textNoteXml);
+      await file.writeAsString(encryptedNote);
       print("File saved: ${file.path}");
     } catch (e) {
       print("ERROR-Couldn't update file: ${e.toString()}");
@@ -111,7 +136,9 @@ class TextNoteService {
       var textNotesDirectory = await _getTextNotesDirectory();
       final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
       String fileText = file.readAsStringSync();
-      final document = XmlDocument.parse(fileText);
+
+      final decryptedNote = _decryptNote(fileText);
+      final document = XmlDocument.parse(decryptedNote);
 
       print("File retrieved: ${file.path}");
 
