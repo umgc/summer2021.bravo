@@ -6,7 +6,7 @@ import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'basemenudrawer.dart';
 
-
+//demo change
 void main() {
   runApp(MyApp());
 }
@@ -32,7 +32,6 @@ class MyApp extends StatelessWidget {
         '/view-notes': (context) => ViewNotes(),
         '/note-details': (context) => NoteDetails(),
         '/record-notes': (context) => SpeechScreen(),
-
       },
     );
   }
