@@ -164,7 +164,7 @@ class TextNoteService {
   }
 
   /// Return a list of all saved text files
-  Future<List<dynamic>> getTextFileList() async {
+  Future<List<dynamic>> getTextFileList(String searchFilter) async {
     List textFileList = <TextNote>[];
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
@@ -181,7 +181,25 @@ class TextNoteService {
                   "...";
         }
 
-        textFileList.add(textNote);
+        if (searchFilter.length == 0) {
+          // No search filter, so just add it
+          textFileList.add(textNote);
+        } else {
+          // Check for all search terms separately since they may not show up together
+          bool found = true;
+          List<String> searchTerms = searchFilter.split(' ');
+
+          searchTerms.forEach((searchTerm) {
+            if (!(textNote.text?.toLowerCase() ?? "")
+                .contains(searchTerm.toLowerCase())) {
+              found = false;
+            }
+          });
+
+          if (found) {
+            textFileList.add(textNote);
+          }
+        }
       }
     } catch (e) {
       print("ERROR-Couldn't read file: ${e.toString()}");
