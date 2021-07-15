@@ -46,9 +46,9 @@ class _SaveNoteState extends State<SaveNote> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                  overlayColor:
-                      MaterialStateProperty.all<Color>(Colors.lightBlue),
+                      MaterialStateProperty.all<Color>(Colors.deepPurple),
+                  overlayColor: MaterialStateProperty.all<Color>(
+                      Colors.deepPurple.shade300),
                 ),
                 onPressed: () {
                   if (textController.text.length > 0) {

@@ -23,12 +23,27 @@ class _ViewNotesState extends State<ViewNotes> {
   /// Date format to use when
   static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
 
+  /// Value of search filter to be used in filtering search results
+  String searchFilter = "";
+
+  /// Search is submitted from search bar
+  onSubmitted(value) {
+    searchFilter = value;
+  }
+
+  // Search has been cleared from search bar
+  onCleared() {
+    searchFilter = "";
+  }
+
   _ViewNotesState() {
     searchBar = new SearchBar(
         inBar: false,
         setState: setState,
-        onSubmitted: print,
+        onSubmitted: onSubmitted,
+        onCleared: onCleared,
         buildDefaultAppBar: buildAppBar);
+    searchFilter = "";
   }
 
   AppBar buildAppBar(BuildContext context) {
@@ -40,7 +55,7 @@ class _ViewNotesState extends State<ViewNotes> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: textNoteService.getTextFileList(),
+        future: textNoteService.getTextFileList(searchFilter),
         builder: (context, AsyncSnapshot<List<dynamic>> textNotes) {
           if (textNotes.hasData) {
             return Scaffold(
@@ -66,35 +81,34 @@ class _ViewNotesState extends State<ViewNotes> {
                           children: <TableRow>[
                             TableRow(
                                 decoration: const BoxDecoration(
-                                  color: Colors.blue,
-                                ),
+                                    color: Colors.deepPurple),
                                 children: <Widget>[
                                   TableCell(
                                     verticalAlignment:
                                         TableCellVerticalAlignment.top,
                                     child: Container(
                                         padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          'DATE',
-                                        )),
+                                        child: Text('DATE',
+                                            style: TextStyle(
+                                                color: Colors.white))),
                                   ),
                                   TableCell(
                                     verticalAlignment:
                                         TableCellVerticalAlignment.top,
                                     child: Container(
                                         padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          'FAV',
-                                        )),
+                                        child: Text('FAV',
+                                            style: TextStyle(
+                                                color: Colors.white))),
                                   ),
                                   TableCell(
                                     verticalAlignment:
                                         TableCellVerticalAlignment.top,
                                     child: Container(
                                         padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          'SNIPPET',
-                                        )),
+                                        child: Text('SNIPPET',
+                                            style: TextStyle(
+                                                color: Colors.white))),
                                   ),
                                 ]),
                             //not sure how to pass the correct element
