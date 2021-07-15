@@ -14,7 +14,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: MyHomePage(title: 'Help Page', url:'https://www.youtube.com/watch?v=S5aK3TIOnIw&ab_channel=Flutter',),
+      home: MyHomePage(
+        title: 'Help Page',
+        url: 'https://www.youtube.com/watch?v=S5aK3TIOnIw&ab_channel=Flutter',
+      ),
     );
   }
 }
@@ -70,18 +73,135 @@ class _MyHomePageState extends State<MyHomePage> {
             appBar: AppBar(
               title: Text(widget.title),
             ),
-            body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  player,
-                  SizedBox(height: 40.0,),
+            body: Container(
+              padding: EdgeInsets.only(
+                left: 16,
+                top: 25,
+                right: 16,
+              ),
+              child: ListView(
+                children: [
                   Text(
-                    'Youtube video Player',
+                    "FAQs & Support",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                   ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.video_camera_back_sharp,
+                        color: Colors.deepPurpleAccent,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        "Walk-through Video",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      player,
+                      SizedBox(
+                        height: 40.0,
+                      ),
+                      // Text(
+                      //   'Harkify video Player',
+                      // ),
+                    ],
+                  ),
+                  Divider(
+                    height: 1,
+                    thickness: 2,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  buildAccountOptionRow(context, "Devices supported?"),
+                  buildAccountOptionRow(context, "Account needed?"),
+                  buildAccountOptionRow(context, "Recording languages?"),
+                  buildAccountOptionRow(
+                      context, "Saving & editing notes issue?"),
+                  buildAccountOptionRow(context, "Privacy policy?"),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.contact_support_sharp,
+                        color: Colors.deepPurpleAccent,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        "Contact Support",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  // This trailing comma makes auto-formatting nicer for build methods.
                 ],
-            ), // This trailing comma makes auto-formatting nicer for build methods.
+              ),
+            ),
           );
-        }
-        );
+        });
   }
+}
+
+GestureDetector buildAccountOptionRow(BuildContext context, String title) {
+  return GestureDetector(
+    onTap: () {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(title),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Option A"),
+                  Text("Option B"),
+                  Text("Option C"),
+                ],
+              ),
+              actions: [
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Close")),
+              ],
+            );
+          });
+    },
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[600],
+            ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey,
+          ),
+        ],
+      ),
+    ),
+  );
 }
