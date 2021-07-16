@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.harkify">
-	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    package="edu.umgc.harkify">
+   <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
    
    <application
-        android:label="Harkify"
+        android:label="harkify"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
