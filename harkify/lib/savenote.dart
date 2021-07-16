@@ -26,7 +26,7 @@ class _SaveNoteState extends State<SaveNote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: BaseMenuDrawer(),
+      endDrawer: BaseMenuDrawer(),
       appBar: new AppBar(
         title: new Text('Save Note'),
       ),

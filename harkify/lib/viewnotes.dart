@@ -48,8 +48,18 @@ class _ViewNotesState extends State<ViewNotes> {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
+        centerTitle: false,
         title: new Text('View Notes'),
-        actions: [searchBar.getSearchAction(context)]);
+        actions: [
+          searchBar.getSearchAction(context),
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            ),
+          )
+        ]);
   }
 
   @override
@@ -59,7 +69,7 @@ class _ViewNotesState extends State<ViewNotes> {
         builder: (context, AsyncSnapshot<List<dynamic>> textNotes) {
           if (textNotes.hasData) {
             return Scaffold(
-              drawer: BaseMenuDrawer(),
+              endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(
                 padding: EdgeInsets.all(10),

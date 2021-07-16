@@ -59,7 +59,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: BaseMenuDrawer(),
+      endDrawer: BaseMenuDrawer(),
       appBar: AppBar(title: Text('Record a Note')),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AvatarGlow(
