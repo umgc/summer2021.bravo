@@ -11,6 +11,9 @@ class SaveNote extends StatefulWidget {
 }
 
 class _SaveNoteState extends State<SaveNote> {
+  /// Text note service to use for I/O operations against local system
+  final TextNoteService textNoteService = new TextNoteService();
+
   final textController = TextEditingController();
   _SaveNoteState();
 
@@ -23,7 +26,7 @@ class _SaveNoteState extends State<SaveNote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: BaseMenuDrawer(),
+      endDrawer: BaseMenuDrawer(),
       appBar: new AppBar(
         title: new Text('Save Note'),
       ),
@@ -43,13 +46,13 @@ class _SaveNoteState extends State<SaveNote> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                  overlayColor:
-                      MaterialStateProperty.all<Color>(Colors.lightBlue),
+                      MaterialStateProperty.all<Color>(Colors.deepPurple),
+                  overlayColor: MaterialStateProperty.all<Color>(
+                      Colors.deepPurple.shade300),
                 ),
                 onPressed: () {
                   if (textController.text.length > 0) {
-                    TextNoteService.saveTextFile(textController.text, false);
+                    textNoteService.saveTextFile(textController.text, false);
                     showConfirmDialog(context);
                   }
                 },
@@ -66,8 +69,7 @@ class _SaveNoteState extends State<SaveNote> {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context).pop();
-        textController.text = "";
+        Navigator.pushNamed(context, '/view-notes');
       },
     );
 

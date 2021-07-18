@@ -1,4 +1,4 @@
-package com.example.helloworld
+package edu.umgc.harkify
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'basemenudrawer.dart';
+import 'textnoteservice.dart';
+import 'voicehelper.dart';
 
 class SpeechScreen extends StatefulWidget {
   @override
@@ -9,8 +12,12 @@ class SpeechScreen extends StatefulWidget {
 
 class _SpeechScreenState extends State<SpeechScreen> {
   final SpeechToText _speech = SpeechToText();
+
   bool _isListening = false;
-  String _textSpeech = 'Please press the mic button to start speaking.';
+  String _textSpeech = 'Press the mic button to start';
+
+  /// Text note service to use for I/O operations against local system
+  final TextNoteService textNoteService = new TextNoteService();
 
   void onListen() async {
     if (!_isListening) {
@@ -32,6 +39,13 @@ class _SpeechScreenState extends State<SpeechScreen> {
       setState(() {
         _isListening = false;
         _speech.stop();
+        // check to see if any text was transcribed
+        if (_textSpeech != '' &&
+            _textSpeech != 'Press the mic button to start') {
+          // if it was, then save it as a note
+          textNoteService.saveTextFile(_textSpeech, false);
+          showConfirmDialog(context);
+        }
       });
     }
   }
@@ -45,7 +59,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Harkify')),
+      endDrawer: BaseMenuDrawer(),
+      appBar: AppBar(title: Text('Record a Note')),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AvatarGlow(
         animate: _isListening,
@@ -71,6 +86,33 @@ class _SpeechScreenState extends State<SpeechScreen> {
                   fontWeight: FontWeight.w500),
             )),
       ),
+    );
+  }
+
+  /// Show a dialog message confirming note was saved
+  showConfirmDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pushNamed(context, '/view-notes');
+      },
+    );
+
+    // set up the dialog
+    AlertDialog alert = AlertDialog(
+      content: Text("The text note was saved successfully."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

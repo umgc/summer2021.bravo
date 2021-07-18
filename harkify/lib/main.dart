@@ -6,7 +6,6 @@ import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'basemenudrawer.dart';
 
-
 void main() {
   runApp(MyApp());
 }
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
       ),
 
       //left this for convenience of reviewer, needs to be changed
-      initialRoute: '/note-details',
+      initialRoute: '/record-notes',
 
       routes: {
         '/': (context) => MyHomePage(title: "Harkify"),
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
         '/view-notes': (context) => ViewNotes(),
         '/note-details': (context) => NoteDetails(),
         '/record-notes': (context) => SpeechScreen(),
-
       },
     );
   }
@@ -79,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      drawer: BaseMenuDrawer(),
+      endDrawer: BaseMenuDrawer(),
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
