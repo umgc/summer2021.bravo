@@ -65,6 +65,15 @@ class BaseMenuDrawer extends StatelessWidget {
               Navigator.pushNamed(context, '/');
             },
           ),
+          ListTile(
+            leading: Icon(Icons.help),
+            title: Text('Help'),
+            subtitle: Text('Learn about this app'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/help');
+            },
+          ),
         ],
       ),
     );
