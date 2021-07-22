@@ -5,6 +5,7 @@ import 'savenote.dart';
 import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'help.dart';
+import 'notification.dart';
 import 'basemenudrawer.dart';
 
 void main() {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/note-details': (context) => NoteDetails(),
         '/record-notes': (context) => SpeechScreen(),
         '/help': (context) => HelpPage(),
+        '/notification': (context) => NotificationPage(),
       },
     );
   }
