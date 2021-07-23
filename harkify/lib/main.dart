@@ -5,6 +5,7 @@ import 'savenote.dart';
 import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'help.dart';
+import 'settings.dart';
 import 'savePersonalDetail.dart';
 import 'personalDetails.dart';
 import 'personalDetail.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/record-notes': (context) => SpeechScreen(),
         '/view-details': (context) => ViewPersonalDetails(),
         '/view-detail': (context) => ViewPersonalDetail(),
+        '/settings': (context) => settingsPage(),
         '/help': (context) => HelpPage(),
       },
     );

@@ -125,6 +125,32 @@ class TextNoteService {
     return "";
   }
 
+  /// Save settings
+  Future<String> saveSettings(Setting updatedSettings) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      String newFileName = "settings";
+      final File file =
+          fileSystem.file('${textNotesDirectory.path}/$newFileName');
+
+      String settingsXml = '''<?xml version="1.0"?>
+        <settings>
+          <file-name>$newFileName</file-name>
+          <days-to-keep>${updatedSettings.daysToKeepFiles}</days-to-keep>        
+          <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait>
+        </settings>''';
+
+      final encryptedNote = _encryptNote(settingsXml);
+      await file.writeAsString(encryptedNote);
+      print("File saved: ${file.path}");
+      return newFileName;
+    } catch (e) {
+      print("ERROR-Couldn't save file: ${e.toString()}");
+    }
+
+    return "";
+  }
+
   /// Update a text note file to local storage
   updateTextFile(TextNote updatedNote) async {
     try {
@@ -147,7 +173,7 @@ class TextNoteService {
     }
   }
 
-  /// Update a text note file to local storage
+  /// Update a personal detail file to local storage
   updatePersonalDetail(PersonalDetail updatedDetail) async {
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
@@ -162,6 +188,28 @@ class TextNoteService {
         </personal-detail>''';
 
       final encryptedNote = _encryptNote(personalDetailXml);
+      await file.writeAsString(encryptedNote);
+      print("File saved: ${file.path}");
+    } catch (e) {
+      print("ERROR-Couldn't update file: ${e.toString()}");
+    }
+  }
+
+  /// Update the settings file to local storage
+  updateSettings(Setting updatedSettings) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      var fileName = "settings";
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+
+      String settingsXml = '''<?xml version="1.0"?>
+        <settings>
+          <file-name>$fileName</file-name>
+          <days-to-keep>${updatedSettings.daysToKeepFiles}</days-to-keep>        
+          <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait>
+        </settings>''';
+
+      final encryptedNote = _encryptNote(settingsXml);
       await file.writeAsString(encryptedNote);
       print("File saved: ${file.path}");
     } catch (e) {
@@ -261,6 +309,39 @@ class TextNoteService {
 
     // Should only get here if there's an error
     return PersonalDetail(fileName, "", "(Could not read file)");
+  }
+
+  /// Return the app settings
+  Future<Setting> getSettings() async {
+    try {
+      String fileName = 'settings';
+      var textNotesDirectory = await _getTextNotesDirectory();
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+      String fileText = file.readAsStringSync();
+
+      final decryptedNote = _decryptNote(fileText);
+      final document = XmlDocument.parse(decryptedNote);
+
+      print("File retrieved: ${file.path}");
+
+      String daysToKeep = document
+              .getElement("settings")
+              ?.getElement("days-to-keep")
+              ?.innerText ??
+          "";
+
+      String secondsToWait = document
+              .getElement("settings")
+              ?.getElement("seconds-to-wait")
+              ?.innerText ??
+          "";
+
+      return new Setting(daysToKeep, secondsToWait);
+    } catch (e) {
+      // this means the file doesn't exist yet, save a new file with the default values
+      saveSettings(new Setting("7", "5"));
+      return Setting("7", "5");
+    }
   }
 
   /// Return a list of all saved text files
@@ -397,4 +478,16 @@ class PersonalDetail {
 
   /// Constructor takes all properties as params
   PersonalDetail(this.fileName, this.key, this.value);
+}
+
+/// Defines the settings object
+class Setting {
+  /// key of the personal detail
+  String? daysToKeepFiles;
+
+  /// value of the personal detail
+  String? secondsSilence;
+
+  /// Constructor takes all properties as params
+  Setting(this.daysToKeepFiles, this.secondsSilence);
 }

@@ -62,7 +62,7 @@ class BaseMenuDrawer extends StatelessWidget {
             subtitle: Text('Edit user settings'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/settings');
             },
           ),
           ListTile(
