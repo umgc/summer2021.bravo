@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
-import './notedetails.dart';
+import './personalDetail.dart';
 import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:intl/intl.dart';
 
 /// View Notes page
-class ViewNotes extends StatefulWidget {
-  const ViewNotes({Key? key}) : super(key: key);
+class ViewPersonalDetails extends StatefulWidget {
+  const ViewPersonalDetails({Key? key}) : super(key: key);
 
   @override
-  _ViewNotesState createState() => _ViewNotesState();
+  _ViewPersonalDetailsState createState() => _ViewPersonalDetailsState();
 }
 
-class _ViewNotesState extends State<ViewNotes> {
+class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
   // Search bar to insert in the app bar header
   late SearchBar searchBar;
 
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
-
-  /// Date format to use when
-  static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
 
   /// Value of search filter to be used in filtering search results
   String searchFilter = "";
@@ -36,7 +32,7 @@ class _ViewNotesState extends State<ViewNotes> {
     searchFilter = "";
   }
 
-  _ViewNotesState() {
+  _ViewPersonalDetailsState() {
     searchBar = new SearchBar(
         inBar: false,
         setState: setState,
@@ -47,7 +43,7 @@ class _ViewNotesState extends State<ViewNotes> {
   }
 
   AppBar buildAppBar(BuildContext context) {
-    return new AppBar(title: new Text('View Notes'), actions: [
+    return new AppBar(title: new Text('View Personal Details'), actions: [
       searchBar.getSearchAction(context),
       Builder(
         builder: (context) => IconButton(
@@ -62,20 +58,21 @@ class _ViewNotesState extends State<ViewNotes> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: textNoteService.getTextFileList(searchFilter),
-        builder: (context, AsyncSnapshot<List<dynamic>> textNotes) {
-          if (textNotes.hasData) {
+        future: textNoteService.getPersonalDetailList(searchFilter),
+        builder: (context, AsyncSnapshot<List<dynamic>> personalDetails) {
+          if (personalDetails.hasData) {
             return Scaffold(
               endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(
                 padding: EdgeInsets.all(10),
                 child: SingleChildScrollView(
-                  child: textNotes.data == null || textNotes.data?.length == 0
-                      // No text notes found, tell user
+                  child: personalDetails.data == null ||
+                          personalDetails.data?.length == 0
+                      // No personal details found, alert the user
                       ? Text(
-                          "Uh-oh! It looks like you don't have any text notes saved. Try saving some notes first and come back here.")
-                      // Add table rows for each text note
+                          "Uh-oh! It looks like you don't have any personal details saved. Try saving some details first and come back here.")
+                      // Add table rows for each personal detail
                       : Table(
                           border: TableBorder.all(),
                           columnWidths: const <int, TableColumnWidth>{
@@ -94,7 +91,7 @@ class _ViewNotesState extends State<ViewNotes> {
                                         TableCellVerticalAlignment.top,
                                     child: Container(
                                         padding: EdgeInsets.all(10),
-                                        child: Text('DATE',
+                                        child: Text('DETAIL',
                                             style: TextStyle(
                                                 color: Colors.white))),
                                   ),
@@ -103,13 +100,14 @@ class _ViewNotesState extends State<ViewNotes> {
                                         TableCellVerticalAlignment.top,
                                     child: Container(
                                         padding: EdgeInsets.all(10),
-                                        child: Text('SNIPPET',
+                                        child: Text('VALUE',
                                             style: TextStyle(
                                                 color: Colors.white))),
                                   ),
                                 ]),
                             //not sure how to pass the correct element
-                            for (var textNote in textNotes.data ?? [])
+                            for (var personalDetail
+                                in personalDetails.data ?? [])
                               TableRow(children: <Widget>[
                                 TableCell(
                                     verticalAlignment:
@@ -117,45 +115,28 @@ class _ViewNotesState extends State<ViewNotes> {
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.pushNamed(
-                                            context, '/save-note');
+                                            context, '/save-detail');
                                       },
                                       child: Container(
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            dateFormat
-                                                .format(textNote.dateTime),
-                                          )),
+                                          child: Text(personalDetail.key)),
                                     )),
                                 TableCell(
                                     verticalAlignment:
                                         TableCellVerticalAlignment.top,
-                                    // text button used to test exact solution from
-                                    // https://flutter.dev/docs/cookbook/navigation/navigate-with-arguments
-                                    // - Alec
-
-                                    /*   child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                              context, '/save-note');
-                                        },
-                                        
-                                            */
                                     child: TextButton(
                                       onPressed: () {
-                                        // When the user taps the button,
-                                        // navigate to a named route and
-                                        // provide the arguments as an optional
-                                        // parameter.
                                         Navigator.pushNamed(
                                           context,
-                                          NoteDetails.routeName,
-                                          arguments: textNote?.fileName ?? "",
+                                          ViewPersonalDetail.routeName,
+                                          arguments:
+                                              personalDetail?.fileName ?? "",
                                         );
                                       },
                                       child: Container(
                                           padding: EdgeInsets.all(10),
                                           child: Text(
-                                            textNote.text,
+                                            personalDetail.value,
                                           )),
                                     )),
                               ]),
@@ -164,9 +145,9 @@ class _ViewNotesState extends State<ViewNotes> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/save-note');
+                  Navigator.pushNamed(context, '/save-detail');
                 },
-                tooltip: 'Save Note',
+                tooltip: 'Save New Detail',
                 child: Icon(Icons.add),
               ), // This trailing comma makes auto-formatting nicer for build methods.
             );

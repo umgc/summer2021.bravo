@@ -3,22 +3,25 @@ import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 
 /// Save Note page
-class SaveNote extends StatefulWidget {
-  const SaveNote({Key? key}) : super(key: key);
+class SavePersonalDetail extends StatefulWidget {
+  const SavePersonalDetail({Key? key}) : super(key: key);
 
   @override
-  _SaveNoteState createState() => _SaveNoteState();
+  _SavePersonalDetailState createState() => _SavePersonalDetailState();
 }
 
-class _SaveNoteState extends State<SaveNote> {
+class _SavePersonalDetailState extends State<SavePersonalDetail> {
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
 
+  final keyController = TextEditingController();
+
   final textController = TextEditingController();
-  _SaveNoteState();
+  _SavePersonalDetailState();
 
   @override
   void dispose() {
+    keyController.dispose();
     textController.dispose();
     super.dispose();
   }
@@ -26,20 +29,29 @@ class _SaveNoteState extends State<SaveNote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       endDrawer: BaseMenuDrawer(),
       appBar: new AppBar(
-        title: new Text('Save Note'),
+        title: new Text('New Personal Detail'),
       ),
       body: Container(
           padding: EdgeInsets.all(10),
           child: Column(
             children: [
               TextField(
-                controller: textController,
-                maxLines: 15,
+                controller: keyController,
+                maxLines: 1,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter your note\'s text'),
+                    hintText: 'Enter the name of the detail you want to save'),
+              ),
+              Container(height: 15),
+              TextField(
+                controller: textController,
+                maxLines: 14,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter your personal detail value'),
               ),
               TextButton(
                 style: ButtonStyle(
@@ -52,7 +64,8 @@ class _SaveNoteState extends State<SaveNote> {
                 ),
                 onPressed: () {
                   if (textController.text.length > 0) {
-                    textNoteService.saveTextFile(textController.text, false);
+                    textNoteService.savePersonalDetail(
+                        keyController.text, textController.text);
                     showConfirmDialog(context);
                   }
                 },
@@ -69,13 +82,13 @@ class _SaveNoteState extends State<SaveNote> {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.pushNamed(context, '/view-notes');
+        Navigator.pushNamed(context, '/view-details');
       },
     );
 
     // set up the dialog
     AlertDialog alert = AlertDialog(
-      content: Text("The text note was saved successfully."),
+      content: Text("Your personal detail has been saved."),
       actions: [
         okButton,
       ],

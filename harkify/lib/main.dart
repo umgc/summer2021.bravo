@@ -5,6 +5,9 @@ import 'savenote.dart';
 import 'viewnotes.dart';
 import 'recordnote.dart';
 import 'help.dart';
+import 'savePersonalDetail.dart';
+import 'personalDetails.dart';
+import 'personalDetail.dart';
 import 'basemenudrawer.dart';
 
 void main() {
@@ -29,9 +32,12 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MyHomePage(title: "Harkify"),
         '/save-note': (context) => SaveNote(),
+        '/save-detail': (context) => SavePersonalDetail(),
         '/view-notes': (context) => ViewNotes(),
         '/note-details': (context) => NoteDetails(),
         '/record-notes': (context) => SpeechScreen(),
+        '/view-details': (context) => ViewPersonalDetails(),
+        '/view-detail': (context) => ViewPersonalDetail(),
         '/help': (context) => HelpPage(),
       },
     );
