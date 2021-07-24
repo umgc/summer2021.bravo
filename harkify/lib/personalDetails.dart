@@ -3,6 +3,8 @@ import './personalDetail.dart';
 import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'voicehelper.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 /// View Notes page
 class ViewPersonalDetails extends StatefulWidget {
@@ -13,18 +15,31 @@ class ViewPersonalDetails extends StatefulWidget {
 }
 
 class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
+  // flag for speech
+  bool readResults = false;
+
   // Search bar to insert in the app bar header
   late SearchBar searchBar;
+
+  // text to speech
+  FlutterTts flutterTts = FlutterTts();
 
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
 
+  // voice helper service
+  final VoiceHelper voiceHelper = new VoiceHelper();
+
   /// Value of search filter to be used in filtering search results
   String searchFilter = "";
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   /// Search is submitted from search bar
   onSubmitted(value) {
+    readResults = true;
     searchFilter = value;
+    setState(() => _scaffoldKey.currentState);
   }
 
   // Search has been cleared from search bar
@@ -55,13 +70,39 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
     ]);
   }
 
+  void voiceHandler(Map<String, dynamic> inference) {
+    if (inference['isUnderstood']) {
+      if (inference['intent'] == 'searchDetails') {
+        print('Searching for: ' + inference['slots']['info']);
+        onSubmitted(inference['slots']['info'].toString());
+      }
+    } else {
+      // TODO handle not inferring
+      print('did not understand');
+    }
+  }
+
+  Future readFilterResults(String theFoundValue) async {
+    if (readResults) {
+      var result = await flutterTts
+          .speak("Your " + searchFilter + " is " + theFoundValue);
+      readResults = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    voiceHelper.startPico(voiceHandler);
+
     return FutureBuilder<List<dynamic>>(
         future: textNoteService.getPersonalDetailList(searchFilter),
         builder: (context, AsyncSnapshot<List<dynamic>> personalDetails) {
           if (personalDetails.hasData) {
+            for (var detail in personalDetails.data ?? []) {
+              readFilterResults(detail.value);
+            }
             return Scaffold(
+              key: _scaffoldKey,
               endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(

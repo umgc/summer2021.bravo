@@ -4,6 +4,8 @@ import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:intl/intl.dart';
+import 'voicehelper.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 /// View Notes page
 class ViewNotes extends StatefulWidget {
@@ -14,11 +16,20 @@ class ViewNotes extends StatefulWidget {
 }
 
 class _ViewNotesState extends State<ViewNotes> {
+  // flag to control whether or not results are read
+  bool readResults = false;
+
   // Search bar to insert in the app bar header
   late SearchBar searchBar;
 
+  // text to speech
+  FlutterTts flutterTts = FlutterTts();
+
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
+
+  // voice helper service
+  final VoiceHelper voiceHelper = new VoiceHelper();
 
   /// Date format to use when
   static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
@@ -28,13 +39,17 @@ class _ViewNotesState extends State<ViewNotes> {
 
   /// Search is submitted from search bar
   onSubmitted(value) {
+    readResults = true;
     searchFilter = value;
+    setState(() => _scaffoldKey.currentState);
   }
 
   // Search has been cleared from search bar
   onCleared() {
     searchFilter = "";
   }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   _ViewNotesState() {
     searchBar = new SearchBar(
@@ -44,6 +59,26 @@ class _ViewNotesState extends State<ViewNotes> {
         onCleared: onCleared,
         buildDefaultAppBar: buildAppBar);
     searchFilter = "";
+  }
+
+  void voiceHandler(Map<String, dynamic> inference) {
+    if (inference['isUnderstood']) {
+      if (inference['intent'] == 'searchNotes') {
+        print('Searching for: ' + inference['slots']['date']);
+        onSubmitted(inference['slots']['date'].toString());
+      }
+    } else {
+      // TODO handle not inferring
+      print('did not understand');
+    }
+  }
+
+  Future readFilterResults(String theFoundValue) async {
+    if (readResults) {
+      var result = await flutterTts.speak(
+          "Your reminders for " + searchFilter + " are: " + theFoundValue);
+      readResults = false;
+    }
   }
 
   AppBar buildAppBar(BuildContext context) {
@@ -61,11 +96,18 @@ class _ViewNotesState extends State<ViewNotes> {
 
   @override
   Widget build(BuildContext context) {
+    voiceHelper.startPico(voiceHandler);
+
     return FutureBuilder<List<dynamic>>(
         future: textNoteService.getTextFileList(searchFilter),
         builder: (context, AsyncSnapshot<List<dynamic>> textNotes) {
           if (textNotes.hasData) {
+            for (var note in textNotes.data ?? []) {
+              readFilterResults(note.text);
+            }
+
             return Scaffold(
+              key: _scaffoldKey,
               endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(

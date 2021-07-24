@@ -39,6 +39,8 @@ dependencies:
   picovoice: ^1.1.8
   encrypt: ^5.0.0
   youtube_player_flutter: ^8.0.0
+  http: ^0.13.3
+  flutter_tts: ^3.2.1
   # speech_recognition: ^0.3.0+1
   # permission_handler: ^8.1.1
 
