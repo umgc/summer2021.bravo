@@ -19,8 +19,13 @@ class _SpeechScreenState extends State<SpeechScreen> {
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
 
+  // voice helper service
+  final VoiceHelper voiceHelper = new VoiceHelper();
+
   void onListen() async {
     if (!_isListening) {
+      voiceHelper.stopPico();
+
       bool available = await _speech.initialize(
         onStatus: (val) => print('onStatus: $val'),
         onError: (val) => print('onError: $val'),
@@ -50,6 +55,19 @@ class _SpeechScreenState extends State<SpeechScreen> {
     }
   }
 
+  void voiceHandler(Map<String, dynamic> inference) {
+    if (inference['isUnderstood']) {
+      if (inference['intent'] == 'startTranscription') {
+        print('start recording');
+        voiceHelper.stopPico();
+        onListen();
+      }
+    } else {
+      // TODO handle not inferring
+      print('did not understand');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +76,12 @@ class _SpeechScreenState extends State<SpeechScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isListening) {
+      voiceHelper.startPico(voiceHandler);
+    } else {
+      voiceHelper.stopPico();
+    }
+
     return Scaffold(
       endDrawer: BaseMenuDrawer(),
       appBar: AppBar(title: Text('Record a Note')),
@@ -70,7 +94,9 @@ class _SpeechScreenState extends State<SpeechScreen> {
         repeatPauseDuration: const Duration(milliseconds: 100),
         repeat: true,
         child: FloatingActionButton(
-          onPressed: () => onListen(),
+          onPressed: () {
+            onListen();
+          },
           child: Icon(_isListening ? Icons.mic : Icons.mic_none),
         ),
       ),

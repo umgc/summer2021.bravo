@@ -46,6 +46,11 @@ class TextNoteService {
     return "textnote_" + fileName;
   }
 
+  /// Returns the personal detail file name
+  String _getNewPersonalDetail(String key) {
+    return "personalDetail_" + key;
+  }
+
   /// Encrypt a plain text note and serialize it as a base-64 string
   String _encryptNote(plainNote) {
     final key = Key.fromUtf8(_encryptionKey);
@@ -94,6 +99,58 @@ class TextNoteService {
     return "";
   }
 
+  /// Save a personal detail file to local storage
+  Future<String> savePersonalDetail(String key, String value) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      String newFileName = _getNewPersonalDetail(key);
+      final File file =
+          fileSystem.file('${textNotesDirectory.path}/$newFileName');
+
+      String personalDetailXml = '''<?xml version="1.0"?>
+        <personal-detail>
+          <file-name>$newFileName</file-name>
+          <key>$key</key>        
+          <value>$value</value>
+        </personal-detail>''';
+
+      final encryptedNote = _encryptNote(personalDetailXml);
+      await file.writeAsString(encryptedNote);
+      print("File saved: ${file.path}");
+      return newFileName;
+    } catch (e) {
+      print("ERROR-Couldn't save file: ${e.toString()}");
+    }
+
+    return "";
+  }
+
+  /// Save settings
+  Future<String> saveSettings(Setting updatedSettings) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      String newFileName = "settings";
+      final File file =
+          fileSystem.file('${textNotesDirectory.path}/$newFileName');
+
+      String settingsXml = '''<?xml version="1.0"?>
+        <settings>
+          <file-name>$newFileName</file-name>
+          <days-to-keep>${updatedSettings.daysToKeepFiles}</days-to-keep>        
+          <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait>
+        </settings>''';
+
+      final encryptedNote = _encryptNote(settingsXml);
+      await file.writeAsString(encryptedNote);
+      print("File saved: ${file.path}");
+      return newFileName;
+    } catch (e) {
+      print("ERROR-Couldn't save file: ${e.toString()}");
+    }
+
+    return "";
+  }
+
   /// Update a text note file to local storage
   updateTextFile(TextNote updatedNote) async {
     try {
@@ -116,11 +173,69 @@ class TextNoteService {
     }
   }
 
+  /// Update a personal detail file to local storage
+  updatePersonalDetail(PersonalDetail updatedDetail) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      var fileName = updatedDetail.fileName;
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+
+      String personalDetailXml = '''<?xml version="1.0"?>
+        <personal-detail>
+          <file-name>$fileName</file-name>
+          <key>${updatedDetail.key}</key>        
+          <value>${updatedDetail.value}</value>
+        </personal-detail>''';
+
+      final encryptedNote = _encryptNote(personalDetailXml);
+      await file.writeAsString(encryptedNote);
+      print("File saved: ${file.path}");
+    } catch (e) {
+      print("ERROR-Couldn't update file: ${e.toString()}");
+    }
+  }
+
+  /// Update the settings file to local storage
+  updateSettings(Setting updatedSettings) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      var fileName = "settings";
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+
+      String settingsXml = '''<?xml version="1.0"?>
+        <settings>
+          <file-name>$fileName</file-name>
+          <days-to-keep>${updatedSettings.daysToKeepFiles}</days-to-keep>        
+          <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait>
+        </settings>''';
+
+      final encryptedNote = _encryptNote(settingsXml);
+      await file.writeAsString(encryptedNote);
+      print("File saved: ${file.path}");
+    } catch (e) {
+      print("ERROR-Couldn't update file: ${e.toString()}");
+    }
+  }
+
   /// Delete a text note file in local storage
   deleteTextFile(TextNote updatedNote) async {
     try {
       var textNotesDirectory = await _getTextNotesDirectory();
       var fileName = updatedNote.fileName;
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+
+      await file.delete();
+      print("File deleted: ${file.path}");
+    } catch (e) {
+      print("ERROR-Couldn't delete file: ${e.toString()}");
+    }
+  }
+
+  /// Delete a personal detail file in local storage
+  deletePersonalDetail(PersonalDetail updatedDetail) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      var fileName = updatedDetail.fileName;
       final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
 
       await file.delete();
@@ -161,6 +276,72 @@ class TextNoteService {
 
     // Should only get here if there's an error, so we don't care about the text note
     return TextNote(fileName, DateTime.now(), "(Could not read file)", false);
+  }
+
+  /// Return a personal detail object, specified by file name
+  Future<PersonalDetail> getPersonalDetail(String fileName) async {
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+      String fileText = file.readAsStringSync();
+
+      final decryptedNote = _decryptNote(fileText);
+      final document = XmlDocument.parse(decryptedNote);
+
+      print("File retrieved: ${file.path}");
+
+      String key = document
+              .getElement("personal-detail")
+              ?.getElement("key")
+              ?.innerText ??
+          "";
+
+      String value = document
+              .getElement("personal-detail")
+              ?.getElement("value")
+              ?.innerText ??
+          "";
+
+      return new PersonalDetail(fileName, key, value);
+    } catch (e) {
+      print("ERROR-Couldn't read file: ${e.toString()}");
+    }
+
+    // Should only get here if there's an error
+    return PersonalDetail(fileName, "", "(Could not read file)");
+  }
+
+  /// Return the app settings
+  Future<Setting> getSettings() async {
+    try {
+      String fileName = 'settings';
+      var textNotesDirectory = await _getTextNotesDirectory();
+      final File file = fileSystem.file('${textNotesDirectory.path}/$fileName');
+      String fileText = file.readAsStringSync();
+
+      final decryptedNote = _decryptNote(fileText);
+      final document = XmlDocument.parse(decryptedNote);
+
+      print("File retrieved: ${file.path}");
+
+      String daysToKeep = document
+              .getElement("settings")
+              ?.getElement("days-to-keep")
+              ?.innerText ??
+          "";
+
+      String secondsToWait = document
+              .getElement("settings")
+              ?.getElement("seconds-to-wait")
+              ?.innerText ??
+          "";
+
+      return new Setting(daysToKeep, secondsToWait);
+    } catch (e) {
+      // this means the file doesn't exist yet, save a new file with the default values
+      saveSettings(new Setting("7", "5"));
+      return Setting("7", "5");
+    }
   }
 
   /// Return a list of all saved text files
@@ -209,6 +390,61 @@ class TextNoteService {
     textFileList.sort((a, b) => b.dateTime?.compareTo(a.dateTime));
     return textFileList;
   }
+
+  /// Return a list of all saved personal details
+  Future<List<dynamic>> getPersonalDetailList(String searchFilter) async {
+    List personalDetailList = <PersonalDetail>[];
+    try {
+      var textNotesDirectory = await _getTextNotesDirectory();
+
+      await for (var entity
+          in textNotesDirectory.list(recursive: false, followLinks: false)) {
+        if (!entity.path.contains("personalDetail_")) continue;
+
+        var fileName =
+            entity.path.substring(entity.path.indexOf("personalDetail_"));
+        var personalDetail = await getPersonalDetail(fileName);
+        if ((personalDetail.value?.length ?? 0) > teaserLength) {
+          personalDetail.value = (personalDetail.value ?? "")
+                  .substring(0, teaserLength)
+                  .trimRight() +
+              "...";
+        }
+
+        if (searchFilter.length == 0) {
+          // No search filter, so just add it
+          personalDetailList.add(personalDetail);
+        } else {
+          // Check for all search terms separately since they may not show up together
+          bool found = true;
+          List<String> searchTerms = searchFilter.split(' ');
+
+          searchTerms.forEach((searchTerm) {
+            if (!(personalDetail.key?.toLowerCase() ?? "")
+                .contains(searchTerm.toLowerCase())) {
+              found = false;
+            }
+            // if the search term wasn't found in the key, check the value
+            if (!found) {
+              found = true;
+              if (!(personalDetail.value?.toLowerCase() ?? "")
+                  .contains(searchTerm.toLowerCase())) {
+                found = false;
+              }
+            }
+          });
+
+          if (found) {
+            personalDetailList.add(personalDetail);
+          }
+        }
+      }
+    } catch (e) {
+      print("ERROR-Couldn't read file: ${e.toString()}");
+    }
+    // no need to sort this, just return the list
+    return personalDetailList;
+  }
 }
 
 /// Defines a specific text note
@@ -227,4 +463,31 @@ class TextNote {
 
   /// Constructor takes all properties as params
   TextNote(this.fileName, this.dateTime, this.text, this.isFavorite);
+}
+
+/// Defines a specific personal detail
+class PersonalDetail {
+  /// Name of the personal detail file
+  String? fileName;
+
+  /// key of the personal detail
+  String? key;
+
+  /// value of the personal detail
+  String? value;
+
+  /// Constructor takes all properties as params
+  PersonalDetail(this.fileName, this.key, this.value);
+}
+
+/// Defines the settings object
+class Setting {
+  /// key of the personal detail
+  String? daysToKeepFiles;
+
+  /// value of the personal detail
+  String? secondsSilence;
+
+  /// Constructor takes all properties as params
+  Setting(this.daysToKeepFiles, this.secondsSilence);
 }

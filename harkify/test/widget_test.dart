@@ -8,6 +8,6 @@ void main() {
     await tester.pumpWidget(MyApp());
 
     // Placeholder test until our unit tests are complete
-    expect(find.text('Harkify'), findsNothing);
+    expect(find.text('Test'), findsNothing);
   });
 }

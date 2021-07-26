@@ -53,7 +53,7 @@ class BaseMenuDrawer extends StatelessWidget {
             subtitle: Text('View and edit user details'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/view-details');
             },
           ),
           ListTile(
@@ -62,7 +62,16 @@ class BaseMenuDrawer extends StatelessWidget {
             subtitle: Text('Edit user settings'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.help),
+            title: Text('Help'),
+            subtitle: Text('Learn about this app'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/help');
             },
           ),
         ],
