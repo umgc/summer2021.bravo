@@ -6,6 +6,7 @@ import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:intl/intl.dart';
 import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 /// View Notes page
 class ViewNotes extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ViewNotesState extends State<ViewNotes> {
   final VoiceHelper voiceHelper = new VoiceHelper();
 
   /// Date format to use when
-  static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
+  static final dateFormat = new DateFormat('EEE, MMM d, yyyy\nh:mm a');
 
   /// Value of search filter to be used in filtering search results
   String searchFilter = "";
@@ -163,10 +164,8 @@ class _ViewNotesState extends State<ViewNotes> {
                                       },
                                       child: Container(
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            dateFormat
-                                                .format(textNote.dateTime),
-                                          )),
+                                          child: Text(timeago
+                                              .format(textNote.dateTime))),
                                     )),
                                 TableCell(
                                     verticalAlignment:

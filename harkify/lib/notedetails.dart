@@ -18,7 +18,7 @@ class _NoteDetailssState extends State<NoteDetails> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final editController = TextEditingController();
   String edits = "";
-  static final dateFormat = new DateFormat('yyyy-MM-dd\nhh:mm');
+  static final dateFormat = new DateFormat('EEE, MMM d, yyyy\nh:mm a');
 
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
