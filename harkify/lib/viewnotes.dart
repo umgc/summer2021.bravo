@@ -19,6 +19,9 @@ class _ViewNotesState extends State<ViewNotes> {
   // flag to control whether or not results are read
   bool readResults = false;
 
+  // flag to indicate a voice search
+  bool voiceSearch = false;
+
   // Search bar to insert in the app bar header
   late SearchBar searchBar;
 
@@ -39,7 +42,10 @@ class _ViewNotesState extends State<ViewNotes> {
 
   /// Search is submitted from search bar
   onSubmitted(value) {
-    readResults = true;
+    if (voiceSearch) {
+      voiceSearch = false;
+      readResults = true;
+    }
     searchFilter = value;
     setState(() => _scaffoldKey.currentState);
   }
@@ -65,6 +71,7 @@ class _ViewNotesState extends State<ViewNotes> {
     if (inference['isUnderstood']) {
       if (inference['intent'] == 'searchNotes') {
         print('Searching for: ' + inference['slots']['date']);
+        voiceSearch = true;
         onSubmitted(inference['slots']['date'].toString());
       }
     } else {
@@ -73,11 +80,23 @@ class _ViewNotesState extends State<ViewNotes> {
     }
   }
 
-  Future readFilterResults(String theFoundValue) async {
-    if (readResults) {
-      var result = await flutterTts.speak(
-          "Your reminders for " + searchFilter + " are: " + theFoundValue);
+  Future readFilterResults() async {
+    List<dynamic> textNotes =
+        await textNoteService.getTextFileList(searchFilter);
+    if (!textNotes.isEmpty) {
+      if (readResults) {
+        for (TextNote note in textNotes) {
+          readResults = false;
+          await flutterTts.speak("Your reminders for " +
+              searchFilter +
+              " are: " +
+              note.text.toString());
+        }
+      }
+    } else if (searchFilter != "") {
       readResults = false;
+      await flutterTts
+          .speak("I'm sorry, I couldn't find anything for " + searchFilter);
     }
   }
 
@@ -102,10 +121,7 @@ class _ViewNotesState extends State<ViewNotes> {
         future: textNoteService.getTextFileList(searchFilter),
         builder: (context, AsyncSnapshot<List<dynamic>> textNotes) {
           if (textNotes.hasData) {
-            for (var note in textNotes.data ?? []) {
-              readFilterResults(note.text);
-            }
-
+            readFilterResults();
             return Scaffold(
               key: _scaffoldKey,
               endDrawer: BaseMenuDrawer(),

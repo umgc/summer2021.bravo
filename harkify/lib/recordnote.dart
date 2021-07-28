@@ -11,7 +11,7 @@ class SpeechScreen extends StatefulWidget {
 }
 
 class _SpeechScreenState extends State<SpeechScreen> {
-  final SpeechToText _speech = SpeechToText();
+  SpeechToText _speech = SpeechToText();
 
   bool _isListening = false;
   String _textSpeech = 'Press the mic button to start';
@@ -27,7 +27,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       voiceHelper.stopPico();
 
       bool available = await _speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
+        onStatus: (val) => {print('onStatus: $val')},
         onError: (val) => print('onError: $val'),
         debugLogging: true,
       );
@@ -71,7 +71,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
   @override
   void initState() {
     super.initState();
-    final SpeechToText _speech = SpeechToText();
+    _speech = SpeechToText();
   }
 
   @override

@@ -103,7 +103,7 @@ class _NoteDetailssState extends State<NoteDetails> {
                                   Navigator.pushNamed(context, '/view-notes');
                                 },
                                 child: Icon(
-                                  Icons.edit,
+                                  Icons.save,
                                   color: Colors.blue,
                                   size: 50.0,
                                   semanticLabel: 'Edit Note',

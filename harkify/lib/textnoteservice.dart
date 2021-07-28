@@ -137,7 +137,8 @@ class TextNoteService {
         <settings>
           <file-name>$newFileName</file-name>
           <days-to-keep>${updatedSettings.daysToKeepFiles}</days-to-keep>        
-          <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait>
+          <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait> 
+          <path-to-wake-word>${updatedSettings.pathToWakeWord}</path-to-wake-word>
         </settings>''';
 
       final encryptedNote = _encryptNote(settingsXml);
@@ -207,6 +208,7 @@ class TextNoteService {
           <file-name>$fileName</file-name>
           <days-to-keep>${updatedSettings.daysToKeepFiles}</days-to-keep>        
           <seconds-to-wait>${updatedSettings.secondsSilence}</seconds-to-wait>
+          <path-to-wake-word>${updatedSettings.pathToWakeWord}</path-to-wake-word>
         </settings>''';
 
       final encryptedNote = _encryptNote(settingsXml);
@@ -311,7 +313,7 @@ class TextNoteService {
     return PersonalDetail(fileName, "", "(Could not read file)");
   }
 
-  /// Return the app settings
+  /// Returns the app settings
   Future<Setting> getSettings() async {
     try {
       String fileName = 'settings';
@@ -336,11 +338,17 @@ class TextNoteService {
               ?.innerText ??
           "";
 
-      return new Setting(daysToKeep, secondsToWait);
+      String pathToWakeWord = document
+              .getElement("settings")
+              ?.getElement("path-to-wake-word")
+              ?.innerText ??
+          "";
+
+      return new Setting(daysToKeep, secondsToWait, pathToWakeWord);
     } catch (e) {
       // this means the file doesn't exist yet, save a new file with the default values
-      saveSettings(new Setting("7", "5"));
-      return Setting("7", "5");
+      saveSettings(new Setting("7", "5", "ok_so.ppn"));
+      return Setting("7", "5", "ok_so.ppn");
     }
   }
 
@@ -482,12 +490,15 @@ class PersonalDetail {
 
 /// Defines the settings object
 class Setting {
-  /// key of the personal detail
+  /// days to keep files before clearing them
   String? daysToKeepFiles;
 
-  /// value of the personal detail
+  /// seconds to listen before stopping a recording
   String? secondsSilence;
 
+  /// path to the wake word file
+  String? pathToWakeWord;
+
   /// Constructor takes all properties as params
-  Setting(this.daysToKeepFiles, this.secondsSilence);
+  Setting(this.daysToKeepFiles, this.secondsSilence, this.pathToWakeWord);
 }
