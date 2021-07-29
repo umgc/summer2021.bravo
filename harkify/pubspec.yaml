@@ -63,8 +63,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/ok_so.ppn
-   - assets/note_taker.rhn
+   - assets/Android/ok_so.ppn
+   - assets/Android/I_see_so.ppn
+   - assets/Android/alright_then.ppn
+   - assets/Android/note_taker.rhn
+   - assets/iOS/ok_so.ppn
+   - assets/iOS/I_see_so.ppn
+   - assets/iOS/alright_then.ppn
+   - assets/iOS/note_taker.rhn
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

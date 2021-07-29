@@ -15,10 +15,25 @@ class _settingsPageState extends State<settingsPage> {
 
   String numberDaysKeepFiles = "1";
   String numberSecondsBeforeStop = "1";
+  String wakeWordPath = "ok_so.ppn";
 
-  _setValues(days, seconds) {
+  _setValues(days, seconds, wakeWord) {
     numberDaysKeepFiles = days;
     numberSecondsBeforeStop = seconds;
+    switch (wakeWord) {
+      case "ok_so.ppn":
+        wakeWordPath = 'Ok, so';
+        break;
+      case "I_see_so.ppn":
+        wakeWordPath = 'I see, so';
+        break;
+      case "alright_then.ppn":
+        wakeWordPath = 'Alright then';
+        break;
+      default:
+        wakeWordPath = 'Ok, so';
+        break;
+    }
   }
 
   @override
@@ -26,8 +41,10 @@ class _settingsPageState extends State<settingsPage> {
     return FutureBuilder<dynamic>(
         future: textNoteService.getSettings(),
         builder: (context, AsyncSnapshot<dynamic> settings) {
-          _setValues(settings.data?.daysToKeepFiles ?? "7",
-              settings.data?.secondsSilence ?? "5");
+          _setValues(
+              settings.data?.daysToKeepFiles ?? "7",
+              settings.data?.secondsSilence ?? "5",
+              settings.data?.pathToWakeWord ?? "ok_so.ppn");
 
           return Scaffold(
               endDrawer: BaseMenuDrawer(),
@@ -130,7 +147,8 @@ class _settingsPageState extends State<settingsPage> {
                                   setState(() {
                                     textNoteService.updateSettings(new Setting(
                                         newValue.toString(),
-                                        numberSecondsBeforeStop));
+                                        numberSecondsBeforeStop,
+                                        wakeWordPath));
                                     numberDaysKeepFiles = newValue.toString();
                                   });
                                 },
@@ -210,7 +228,8 @@ class _settingsPageState extends State<settingsPage> {
                                   setState(() {
                                     textNoteService.updateSettings(new Setting(
                                         numberDaysKeepFiles,
-                                        newValue.toString()));
+                                        newValue.toString(),
+                                        wakeWordPath));
                                     numberSecondsBeforeStop =
                                         newValue.toString();
                                   });
@@ -227,6 +246,81 @@ class _settingsPageState extends State<settingsPage> {
                                   '13',
                                   '14',
                                   '15'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: IntrinsicHeight(
+                      //row with 2 spaced columns
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            constraints:
+                                BoxConstraints(minWidth: 175, maxWidth: 175),
+                            margin: const EdgeInsets.only(
+                              top: 10,
+                            ),
+                            child: Text(
+                              "What phrase should wake the app up?",
+                              textAlign: TextAlign.left,
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.grey),
+                            ),
+                          ),
+                          Container(width: 15),
+                          //delete icon
+                          Column(
+                            children: <Widget>[
+                              DropdownButton<String>(
+                                value: wakeWordPath,
+                                icon: const Icon(Icons.arrow_downward),
+                                iconSize: 30,
+                                elevation: 16,
+                                style: const TextStyle(
+                                    color: Colors.deepPurple, fontSize: 20),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.deepPurpleAccent,
+                                ),
+                                onChanged: (String? newValue) {
+                                  String saveVal = "";
+                                  switch (newValue) {
+                                    case 'Ok, so':
+                                      saveVal = "ok_so.ppn";
+                                      break;
+                                    case 'I see, so':
+                                      saveVal = "I_see_so.ppn";
+                                      break;
+                                    case 'Alright then':
+                                      saveVal = "alright_then.ppn";
+                                      break;
+                                    default:
+                                      saveVal = newValue.toString();
+                                      break;
+                                  }
+                                  setState(() {
+                                    textNoteService.updateSettings(new Setting(
+                                        numberDaysKeepFiles,
+                                        numberSecondsBeforeStop,
+                                        saveVal));
+                                    wakeWordPath = saveVal;
+                                  });
+                                },
+                                items: <String>[
+                                  'Ok, so',
+                                  'I see, so',
+                                  'Alright then'
                                 ].map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,

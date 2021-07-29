@@ -1,5 +1,7 @@
 import 'package:picovoice/picovoice_manager.dart';
 import 'package:picovoice/picovoice_error.dart';
+import 'textnoteservice.dart';
+import 'dart:io' show Platform;
 
 class VoiceHelper {
   PicovoiceManager _picovoiceManager = PicovoiceManager.create(
@@ -19,11 +21,31 @@ class VoiceHelper {
     return "pico service stopped";
   }
 
+  String _WakeWordfileName = "ok_so.ppn", _RhinoFileName = "";
+//Get the filepath of the wake word
+  Future<String> _getWakeWordPath() async {
+    final TextNoteService textNoteService = new TextNoteService();
+    Setting setting = await textNoteService.getSettings();
+    _WakeWordfileName = setting.pathToWakeWord ?? "ok_so.ppn";
+    return _WakeWordfileName;
+  }
+
 // start the service
   Future<String> startPico(
       dynamic callback(Map<String, dynamic> inference)) async {
-    _picovoiceManager = PicovoiceManager.create("assets/ok_so.ppn",
-        _wakeWordCallbackDefault, "assets/note_taker.rhn", callback,
+    await _getWakeWordPath().toString();
+
+    if (Platform.isAndroid) {
+      // Android-specific code
+      _WakeWordfileName = "assets/Android/" + _WakeWordfileName;
+      _RhinoFileName = "assets/Android/note_taker.rhn";
+    } else if (Platform.isIOS) {
+      // iOS-specific code
+      _WakeWordfileName = "assets/iOS/" + _WakeWordfileName;
+      _RhinoFileName = "assets/iOS/note_taker.rhn";
+    }
+    _picovoiceManager = PicovoiceManager.create(
+        _WakeWordfileName, _wakeWordCallbackDefault, _RhinoFileName, callback,
         errorCallback: _errorCallback);
 
     try {
