@@ -3,9 +3,9 @@ import './notedetails.dart';
 import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:intl/intl.dart';
 import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 /// View Notes page
 class ViewNotes extends StatefulWidget {
@@ -33,9 +33,6 @@ class _ViewNotesState extends State<ViewNotes> {
 
   // voice helper service
   final VoiceHelper voiceHelper = new VoiceHelper();
-
-  /// Date format to use when
-  static final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
 
   /// Value of search filter to be used in filtering search results
   String searchFilter = "";
@@ -132,7 +129,10 @@ class _ViewNotesState extends State<ViewNotes> {
                   child: textNotes.data == null || textNotes.data?.length == 0
                       // No text notes found, tell user
                       ? Text(
-                          "Uh-oh! It looks like you don't have any text notes saved. Try saving some notes first and come back here.")
+                          "Uh-oh! It looks like you don't have any text notes saved. Try saving some notes first and come back here.",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ))
                       // Add table rows for each text note
                       : Table(
                           border: TableBorder.all(),
@@ -154,6 +154,8 @@ class _ViewNotesState extends State<ViewNotes> {
                                         padding: EdgeInsets.all(10),
                                         child: Text('DATE',
                                             style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
                                                 color: Colors.white))),
                                   ),
                                   TableCell(
@@ -163,6 +165,8 @@ class _ViewNotesState extends State<ViewNotes> {
                                         padding: EdgeInsets.all(10),
                                         child: Text('SNIPPET',
                                             style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
                                                 color: Colors.white))),
                                   ),
                                 ]),
@@ -170,20 +174,14 @@ class _ViewNotesState extends State<ViewNotes> {
                             for (var textNote in textNotes.data ?? [])
                               TableRow(children: <Widget>[
                                 TableCell(
-                                    verticalAlignment:
-                                        TableCellVerticalAlignment.top,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, '/save-note');
-                                      },
-                                      child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            dateFormat
-                                                .format(textNote.dateTime),
-                                          )),
-                                    )),
+                                  verticalAlignment:
+                                      TableCellVerticalAlignment.top,
+                                  child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text(
+                                          timeago.format(textNote.dateTime),
+                                          style: TextStyle(fontSize: 20))),
+                                ),
                                 TableCell(
                                     verticalAlignment:
                                         TableCellVerticalAlignment.top,
@@ -212,9 +210,10 @@ class _ViewNotesState extends State<ViewNotes> {
                                       },
                                       child: Container(
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            textNote.text,
-                                          )),
+                                          child: Text(textNote.text,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                              ))),
                                     )),
                               ]),
                           ]),
