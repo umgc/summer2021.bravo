@@ -1,9 +1,9 @@
+import 'package:Harkify/textnoteservice.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:xml/xml.dart';
 import 'package:file/file.dart';
 import 'package:file/memory.dart';
-import '../lib/textnoteservice.dart';
 
+/// Run all text note related tests from the TextNoteService class
 void main() {
   /// The file system to use for all I/O operations without saving real files
   FileSystem fileSystem = MemoryFileSystem();
@@ -28,7 +28,7 @@ void main() {
     bool newFileExists = await newFile.exists();
     // There should be a filename returned
     expect(filename == "", false);
-    // Text file for note should be there
+    // Text file should be there
     expect(newFileExists, true);
   });
 
