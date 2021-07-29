@@ -117,12 +117,7 @@ class _NoteDetailssState extends State<NoteDetails> {
                             children: <Widget>[
                               ElevatedButton(
                                 onPressed: () async {
-                                  textNoteService.deleteTextFile(new TextNote(
-                                      selectedNote.data.fileName,
-                                      selectedNote.data.dateTime,
-                                      edits,
-                                      false));
-                                  Navigator.pushNamed(context, '/view-notes');
+                                  showAlertDialog(context, selectedNote);
                                 },
                                 child: Icon(
                                   Icons.delete,
@@ -159,5 +154,55 @@ class _NoteDetailssState extends State<NoteDetails> {
             return CircularProgressIndicator();
           }
         });
+  }
+
+//This alert dialog runs when Delete buttion is selected
+  showAlertDialog(BuildContext context, selectedNote) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(fontSize: 20),
+      ),
+      onPressed: () {
+        //closes popup
+        Navigator.of(context).pop();
+      },
+    );
+    Widget confirmButton = TextButton(
+      child: Text(
+        "Confirm",
+        style: TextStyle(fontSize: 20),
+      ),
+      onPressed: () {
+        textNoteService.deleteTextFile(new TextNote(selectedNote.data.fileName,
+            selectedNote.data.dateTime, edits, false));
+        //closing the popup here may not be neccessary
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/view-notes');
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "Confirm Note Deletion",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+      content: Text(
+        "Are you sure you want to delete this note?",
+        style: TextStyle(fontSize: 20),
+      ),
+      actions: [
+        cancelButton,
+        confirmButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
