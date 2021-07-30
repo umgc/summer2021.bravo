@@ -13,4 +13,6 @@
 - Elshaday Mesfin 
 - Tyler Puschinsky
 - Ben Cushing
+- Madison Dunning
+- Alec Baileys
 
