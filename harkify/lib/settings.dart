@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'basemenudrawer.dart';
 import 'textnoteservice.dart';
 
+final settingsScaffoldKey = GlobalKey<ScaffoldState>();
+
 class settingsPage extends StatefulWidget {
   final String title = "Settings";
 
@@ -30,6 +32,7 @@ class _settingsPageState extends State<settingsPage> {
               settings.data?.secondsSilence ?? "5");
 
           return Scaffold(
+              key: settingsScaffoldKey,
               endDrawer: BaseMenuDrawer(),
               appBar: AppBar(
                 title: Text(widget.title),

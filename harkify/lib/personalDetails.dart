@@ -6,6 +6,8 @@ import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+final personalDetailsScaffoldKey = GlobalKey<ScaffoldState>();
+
 /// View Notes page
 class ViewPersonalDetails extends StatefulWidget {
   const ViewPersonalDetails({Key? key}) : super(key: key);
@@ -33,13 +35,11 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
   /// Value of search filter to be used in filtering search results
   String searchFilter = "";
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   /// Search is submitted from search bar
   onSubmitted(value) {
     readResults = true;
     searchFilter = value;
-    setState(() => _scaffoldKey.currentState);
+    setState(() => personalDetailsScaffoldKey.currentState);
   }
 
   // Search has been cleared from search bar
@@ -102,7 +102,7 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
               readFilterResults(detail.value);
             }
             return Scaffold(
-              key: _scaffoldKey,
+              key: personalDetailsScaffoldKey,
               endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(
