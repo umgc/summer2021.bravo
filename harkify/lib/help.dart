@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import "package:youtube_player_flutter/youtube_player_flutter.dart";
 import 'basemenudrawer.dart';
 
+
+final helpScaffoldKey = GlobalKey<ScaffoldState>();
+
 class HelpPage extends StatefulWidget {
   final String title = "Help Page";
   final url = YoutubePlayer.convertUrlToId(
@@ -54,6 +57,7 @@ class _HelpPageState extends State<HelpPage> {
         ),
         builder: (context, player) {
           return Scaffold(
+            key: helpScaffoldKey,
             endDrawer: BaseMenuDrawer(),
             appBar: AppBar(
               title: Text(widget.title),
