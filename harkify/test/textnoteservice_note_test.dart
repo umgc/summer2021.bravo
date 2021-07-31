@@ -9,13 +9,13 @@ void main() {
   FileSystem fileSystem = MemoryFileSystem();
 
   /// Text note service to use for I/O operations against mock file system
-  TextNoteService textNoteService = new TextNoteService(fileSystem: fileSystem);
+  TextNoteService textNoteService = new TextNoteService();
 
   /// Some preparatory steps to take before executing a text note service test
   prepForTests() {
     // Reinitialize file system and service so we're starting from a blank slate
     fileSystem = MemoryFileSystem();
-    textNoteService = new TextNoteService(fileSystem: fileSystem);
+    TextNoteService.fileSystem = fileSystem;
   }
 
   test('Text note should be saved', () async {

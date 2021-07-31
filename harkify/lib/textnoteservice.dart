@@ -14,10 +14,10 @@ class TextNoteService {
 
   /// The file system to use for all I/O operations. Generally LocalFileSystem()
   /// but MemoryFileSystem() is used when running unit tests.
-  FileSystem fileSystem;
+  static FileSystem fileSystem = const LocalFileSystem();
 
-  /// Constructor initializes FileSystem
-  TextNoteService({this.fileSystem = const LocalFileSystem()});
+  /// Constructor
+  TextNoteService();
 
   /// Returns the correct file directory for all text notes
   Future<Directory> _getTextNotesDirectory() async {
