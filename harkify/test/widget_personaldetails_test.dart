@@ -1,9 +1,10 @@
 import 'package:Harkify/textnoteservice.dart';
-import 'package:Harkify/viewnotes.dart';
+import 'package:Harkify/personalDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:file/file.dart';
 import 'package:file/memory.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 /// Conduct unit tests of the ViewNotes widget
 void main() {
@@ -23,18 +24,19 @@ void main() {
     );
   }
 
-  testWidgets('test view notes screen', (WidgetTester tester) async {
+  testWidgets('test view personal details screen', (WidgetTester tester) async {
     prepForTests();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(createWidgetForTesting(child: new ViewNotes()));
+    await tester
+        .pumpWidget(createWidgetForTesting(child: new ViewPersonalDetails()));
 
-    // Should see the progress indicator while text notes load
+    // Should see the progress indicator while personal details load
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     await tester.pumpAndSettle();
 
-    // Application should show "View Notes" as title
-    expect(find.text("View Notes"), findsOneWidget);
+    // Application should show "View Personal Details" as title
+    expect(find.text("View Personal Details"), findsOneWidget);
 
     // Application should have one menu icon button
     expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -45,7 +47,7 @@ void main() {
     // Application should show that no text notes have been saved
     expect(
         find.text(
-            "Uh-oh! It looks like you don't have any text notes saved. Try saving some notes first and come back here."),
+            "Uh-oh! It looks like you don't have any personal details saved. Try saving some details first and come back here."),
         findsOneWidget);
 
     // Application should have one "+" icon button

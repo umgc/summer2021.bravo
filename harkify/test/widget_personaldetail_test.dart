@@ -1,5 +1,5 @@
 import 'package:Harkify/textnoteservice.dart';
-import 'package:Harkify/notedetails.dart';
+import 'package:Harkify/personalDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:file/file.dart';
@@ -23,18 +23,19 @@ void main() {
     );
   }
 
-  testWidgets('test note details screen', (WidgetTester tester) async {
+  testWidgets('test view personal details screen', (WidgetTester tester) async {
     prepForTests();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(createWidgetForTesting(child: new NoteDetails()));
+    await tester
+        .pumpWidget(createWidgetForTesting(child: new ViewPersonalDetail()));
 
-    // Should see the progress indicator while text notes load
+    // Should see the progress indicator while personal details load
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     await tester.pumpAndSettle();
 
-    // Application should show "Notes" as title
-    expect(find.text("Notes"), findsOneWidget);
+    // Application should show "Personal Detail" as title
+    expect(find.text("Personal Detail"), findsOneWidget);
 
     // Application should NOT have a menu icon button
     expect(find.byIcon(Icons.menu), findsNothing);
