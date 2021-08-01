@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'basemenudrawer.dart';
 import 'textnoteservice.dart';
 
@@ -16,6 +17,16 @@ class _settingsPageState extends State<settingsPage> {
   String numberDaysKeepFiles = "1";
   String numberSecondsBeforeStop = "1";
   String wakeWordPath = "ok_so.ppn";
+
+  _launchURL() async {
+    const url =
+        "https://rposbo.github.io/speaker-recognition-api/demo.html?endpoint=https%3A%2F%2Fsummer2021bravo.cognitiveservices.azure.com%2F&key=b6e8188efdce487e98e48bcc0cfd2e3d";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   _setValues(days, seconds, wakeWord) {
     numberDaysKeepFiles = days;
@@ -53,61 +64,20 @@ class _settingsPageState extends State<settingsPage> {
               ),
               body: ListView(
                 children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(15.0),
-                    child: IntrinsicHeight(
-                      //row with 2 spaced columns
-                      child: Row(
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              TextButton(
-                                style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.deepPurple),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.deepPurple.shade300),
-                                ),
-                                onPressed: () {
-                                  // create the Azure voice profile
-                                },
-                                child: Text('Create Voice Profile',
-                                    style: TextStyle(fontSize: 16)),
-                              ),
-                            ],
-                          ),
-                          Container(width: 15),
-                          //delete icon
-                          Column(
-                            children: <Widget>[
-                              TextButton(
-                                style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.deepPurple),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.deepPurple.shade300),
-                                ),
-                                onPressed: () {
-                                  // test the Azure voice profile
-                                },
-                                child: Text('Test Voice Profile',
-                                    style: TextStyle(fontSize: 16)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.deepPurple),
+                      overlayColor: MaterialStateProperty.all<Color>(
+                          Colors.deepPurple.shade300),
                     ),
+                    onPressed: () {
+                      // create the Azure voice profile
+                      _launchURL();
+                    },
+                    child: Text('Create and Test Voice Profile'),
                   ),
                   Container(
                     padding: EdgeInsets.all(15.0),
