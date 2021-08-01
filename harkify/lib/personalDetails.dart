@@ -15,6 +15,9 @@ class ViewPersonalDetails extends StatefulWidget {
 }
 
 class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
+  // flag to indicate if a voice search was performed
+  bool voiceSearch = false;
+
   // flag for speech
   bool readResults = false;
 
@@ -37,7 +40,10 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
 
   /// Search is submitted from search bar
   onSubmitted(value) {
-    readResults = true;
+    if (voiceSearch) {
+      voiceSearch = false;
+      readResults = true;
+    }
     searchFilter = value;
     setState(() => _scaffoldKey.currentState);
   }
@@ -82,11 +88,21 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
     }
   }
 
-  Future readFilterResults(String theFoundValue) async {
-    if (readResults) {
-      var result = await flutterTts
-          .speak("Your " + searchFilter + " is " + theFoundValue);
+  Future readFilterResults() async {
+    List<dynamic> personalDetails =
+        await textNoteService.getPersonalDetailList(searchFilter);
+    if (!personalDetails.isEmpty) {
+      if (readResults) {
+        for (PersonalDetail detail in personalDetails) {
+          readResults = false;
+          await flutterTts
+              .speak("Your " + searchFilter + " is " + detail.value.toString());
+        }
+      }
+    } else if (searchFilter != "") {
       readResults = false;
+      await flutterTts
+          .speak("I'm sorry, I couldn't find anything for " + searchFilter);
     }
   }
 
@@ -98,9 +114,8 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
         future: textNoteService.getPersonalDetailList(searchFilter),
         builder: (context, AsyncSnapshot<List<dynamic>> personalDetails) {
           if (personalDetails.hasData) {
-            for (var detail in personalDetails.data ?? []) {
-              readFilterResults(detail.value);
-            }
+            readFilterResults();
+
             return Scaffold(
               key: _scaffoldKey,
               endDrawer: BaseMenuDrawer(),

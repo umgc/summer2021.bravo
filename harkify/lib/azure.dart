@@ -16,7 +16,6 @@ class Azure {
     var response;
     Map<String, dynamic> responseBody;
     var recognizedVoiceText;
-
     try {
       response = await http.post(
         Uri.parse(

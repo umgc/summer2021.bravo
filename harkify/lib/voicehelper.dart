@@ -37,11 +37,13 @@ class VoiceHelper {
 
     if (Platform.isAndroid) {
       // Android-specific code
-      _WakeWordfileName = "assets/Android/" + _WakeWordfileName;
+      _WakeWordfileName = "assets/Android/" +
+          _WakeWordfileName.replaceAll("assets/Android/", "");
       _RhinoFileName = "assets/Android/note_taker.rhn";
     } else if (Platform.isIOS) {
       // iOS-specific code
-      _WakeWordfileName = "assets/iOS/" + _WakeWordfileName;
+      _WakeWordfileName =
+          "assets/iOS/" + _WakeWordfileName.replaceAll("assets/iOS/", "");
       _RhinoFileName = "assets/iOS/note_taker.rhn";
     }
     _picovoiceManager = PicovoiceManager.create(
