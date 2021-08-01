@@ -90,10 +90,6 @@ class _ViewNotesState extends State<ViewNotes> {
               note.text.toString());
         }
       }
-    } else if (searchFilter != "") {
-      readResults = false;
-      await flutterTts
-          .speak("I'm sorry, I couldn't find anything for " + searchFilter);
     }
   }
 

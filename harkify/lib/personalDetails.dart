@@ -100,10 +100,6 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
               .speak("Your " + searchFilter + " is " + detail.value.toString());
         }
       }
-    } else if (searchFilter != "") {
-      readResults = false;
-      await flutterTts
-          .speak("I'm sorry, I couldn't find anything for " + searchFilter);
     }
   }
 
