@@ -80,6 +80,7 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
     if (inference['isUnderstood']) {
       if (inference['intent'] == 'searchDetails') {
         print('Searching for: ' + inference['slots']['info']);
+        voiceSearch = true;
         onSubmitted(inference['slots']['info'].toString());
       }
     } else {

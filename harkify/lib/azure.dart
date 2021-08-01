@@ -19,7 +19,7 @@ class Azure {
     try {
       response = await http.post(
         Uri.parse(
-            "https://summer2021bravo.cognitiveservices.azure.com/language=en-us"),
+            "https://summer2021bravo.cognitiveservices.azure.com/speaker/identification/v2.0/text-independent/profiles?locale=en-us"),
         body: bytes,
         headers: headers,
       );
