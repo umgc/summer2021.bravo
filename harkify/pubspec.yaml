@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.0.9
   just_audio: ^0.9.5
   record: ^3.0.0
+  shared_preferences: ^2.0.6
   # speech_recognition: ^0.3.0+1
   # permission_handler: ^8.1.1
 

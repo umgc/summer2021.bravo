@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'voicehelper.dart';
@@ -21,6 +22,21 @@ class _SpeechScreenState extends State<SpeechScreen> {
 
   // voice helper service
   final VoiceHelper voiceHelper = new VoiceHelper();
+
+  Future<bool> isFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('first_time') ?? true;
+
+    if (!isFirstTime) {
+      prefs.setBool('first_time', false);
+      print('Not the first time here');
+      return false;
+    } else {
+      prefs.setBool('first_time', false);
+      Navigator.pushNamed(context, '/create-profile');
+      return true;
+    }
+  }
 
   void onListen() async {
     if (!_isListening) {
@@ -81,6 +97,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
     } else {
       voiceHelper.stopPico();
     }
+
+    isFirstTime();
 
     return Scaffold(
       endDrawer: BaseMenuDrawer(),

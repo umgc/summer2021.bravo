@@ -26,10 +26,7 @@ class MyApp extends StatelessWidget {
         // This is the theme of your application.
         primarySwatch: Colors.deepPurple,
       ),
-
-      //left this for convenience of reviewer, needs to be changed
       initialRoute: '/record-notes',
-
       routes: {
         '/save-note': (context) => SaveNote(),
         '/save-detail': (context) => SavePersonalDetail(),
