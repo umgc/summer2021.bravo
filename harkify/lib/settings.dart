@@ -18,16 +18,6 @@ class _settingsPageState extends State<settingsPage> {
   String numberSecondsBeforeStop = "1";
   String wakeWordPath = "ok_so.ppn";
 
-  _launchURL() async {
-    const url =
-        "https://rposbo.github.io/speaker-recognition-api/demo.html?endpoint=https%3A%2F%2Fsummer2021bravo.cognitiveservices.azure.com%2F&key=b6e8188efdce487e98e48bcc0cfd2e3d";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   _setValues(days, seconds, wakeWord) {
     numberDaysKeepFiles = days;
     numberSecondsBeforeStop = seconds;
@@ -75,7 +65,8 @@ class _settingsPageState extends State<settingsPage> {
                     ),
                     onPressed: () {
                       // create the Azure voice profile
-                      _launchURL();
+                      //_launchURL();
+                      Navigator.pushNamed(context, '/create-profile');
                     },
                     child: Text('Create and Test Voice Profile'),
                   ),

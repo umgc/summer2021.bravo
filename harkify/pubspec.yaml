@@ -43,6 +43,8 @@ dependencies:
   flutter_tts: ^3.2.1
   timeago: ^3.1.0
   url_launcher: ^6.0.9
+  just_audio: ^0.9.5
+  record: ^3.0.0
   # speech_recognition: ^0.3.0+1
   # permission_handler: ^8.1.1
 

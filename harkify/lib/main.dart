@@ -9,6 +9,7 @@ import 'settings.dart';
 import 'savePersonalDetail.dart';
 import 'personalDetails.dart';
 import 'personalDetail.dart';
+import 'recordVoice.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/view-detail': (context) => ViewPersonalDetail(),
         '/settings': (context) => settingsPage(),
         '/help': (context) => HelpPage(),
+        '/create-profile': (context) => CreateProfile(),
       },
     );
   }
