@@ -14,7 +14,6 @@
 - Tyler Puschinsky
 - Ben Cushing
 - Madison Dunning
-- Alec Baileys
 
 # Testing
 To execute the integration tests, run the command following command (replace the DEVICE_ID with the appropriate device found with `adb devices`):

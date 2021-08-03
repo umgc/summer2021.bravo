@@ -4,6 +4,8 @@ import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:file/file.dart';
+import 'package:file/local.dart';
 import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -28,7 +30,7 @@ class _ViewNotesState extends State<ViewNotes> {
   FlutterTts flutterTts = FlutterTts();
 
   /// Text note service to use for I/O operations against local system
-  final TextNoteService textNoteService = new TextNoteService();
+  TextNoteService textNoteService = new TextNoteService();
 
   // voice helper service
   final VoiceHelper voiceHelper = new VoiceHelper();
