@@ -71,9 +71,19 @@ class _ViewNotesState extends State<ViewNotes> {
         voiceSearch = true;
         onSubmitted(inference['slots']['date'].toString());
       }
+      if (inference['intent'] == 'startTranscription') {
+        print('start recording');
+        Navigator.pushNamed(context, '/record-notes');
+      }
+      if (inference['intent'] == 'searchDetails') {
+        print('Searching for personal detail');
+        Navigator.pushNamed(context, '/view-details');
+      }
     } else {
-      // TODO handle not inferring
-      print('did not understand');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Sorry, I did not understand'),
+          backgroundColor: Colors.deepOrange,
+          duration: const Duration(seconds: 1)));
     }
   }
 

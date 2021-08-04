@@ -13,6 +13,7 @@ class SpeechScreen extends StatefulWidget {
 
 class _SpeechScreenState extends State<SpeechScreen> {
   SpeechToText _speech = SpeechToText();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   bool _isListening = false;
   String _textSpeech = 'Press the mic button to start';
@@ -41,9 +42,12 @@ class _SpeechScreenState extends State<SpeechScreen> {
   void onListen() async {
     if (!_isListening) {
       voiceHelper.stopPico();
+      _textSpeech = "";
 
       bool available = await _speech.initialize(
-        onStatus: (val) => {print('onStatus: $val')},
+        onStatus: (val) => {
+          if (val == 'notListening') {print('onStatus: $val')}
+        },
         onError: (val) => print('onError: $val'),
         debugLogging: true,
       );
@@ -78,15 +82,26 @@ class _SpeechScreenState extends State<SpeechScreen> {
         voiceHelper.stopPico();
         onListen();
       }
+      if (inference['intent'] == 'searchNotes') {
+        print('Searching notes');
+        Navigator.pushNamed(context, '/view-notes');
+      }
+      if (inference['intent'] == 'searchDetails') {
+        print('Searching for personal detail');
+        Navigator.pushNamed(context, '/view-details');
+      }
     } else {
-      // TODO handle not inferring
-      print('did not understand');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Sorry, I did not understand'),
+          backgroundColor: Colors.deepOrange,
+          duration: const Duration(seconds: 1)));
     }
   }
 
   @override
   void initState() {
     super.initState();
+    _isListening = false;
     _speech = SpeechToText();
   }
 
@@ -101,6 +116,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
     isFirstTime();
 
     return Scaffold(
+      key: _scaffoldKey,
       endDrawer: BaseMenuDrawer(),
       appBar: AppBar(title: Text('Record a Note')),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

@@ -83,9 +83,19 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
         voiceSearch = true;
         onSubmitted(inference['slots']['info'].toString());
       }
+      if (inference['intent'] == 'startTranscription') {
+        print('start recording');
+        Navigator.pushNamed(context, '/record-notes');
+      }
+      if (inference['intent'] == 'searchNotes') {
+        print('Searching for: ' + inference['slots']['date']);
+        Navigator.pushNamed(context, '/view-notes');
+      }
     } else {
-      // TODO handle not inferring
-      print('did not understand');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Sorry, I did not understand'),
+          backgroundColor: Colors.deepOrange,
+          duration: const Duration(seconds: 1)));
     }
   }
 

@@ -31,8 +31,6 @@ class Azure {
       );
 
       // The response body is a string that needs to be decoded as a json in order to get the extract the text.
-      print('the response code: ' + response.statusCode.toString());
-      print('the response body: ' + response.body);
       responseBody = jsonDecode(response.body);
       recognizedVoiceText = responseBody["DisplayText"];
     } catch (e) {

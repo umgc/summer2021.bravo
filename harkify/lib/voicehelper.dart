@@ -1,7 +1,7 @@
+import 'dart:io' show Platform;
 import 'package:picovoice/picovoice_manager.dart';
 import 'package:picovoice/picovoice_error.dart';
 import 'textnoteservice.dart';
-import 'dart:io' show Platform;
 
 class VoiceHelper {
   PicovoiceManager _picovoiceManager = PicovoiceManager.create(
