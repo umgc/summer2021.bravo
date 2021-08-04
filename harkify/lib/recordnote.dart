@@ -15,7 +15,6 @@ class SpeechScreen extends StatefulWidget {
 
 class _SpeechScreenState extends State<SpeechScreen> {
   SpeechToText _speech = SpeechToText();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   bool _isListening = false;
   String _textSpeech = 'Press the mic button to start';

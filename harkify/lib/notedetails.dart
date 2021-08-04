@@ -15,7 +15,6 @@ class NoteDetails extends StatefulWidget {
 }
 
 class _NoteDetailssState extends State<NoteDetails> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final editController = TextEditingController();
   String edits = "";
   static final dateFormat = new DateFormat('EEE, MMM d, yyyy\nh:mm a');
@@ -53,7 +52,6 @@ class _NoteDetailssState extends State<NoteDetails> {
             editController.text = selectedNote.data?.text ?? "";
 
             return Scaffold(
-              key: _scaffoldKey,
               //drawer: BaseMenuDrawer(),
               appBar: AppBar(title: Text('Notes')),
               body: ListView(
