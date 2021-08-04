@@ -4,20 +4,24 @@ import 'package:picovoice/picovoice_error.dart';
 import 'textnoteservice.dart';
 
 class VoiceHelper {
-  PicovoiceManager _picovoiceManager = PicovoiceManager.create(
-      "assets/ok_so.ppn",
-      _wakeWordCallbackDefault,
-      "assets/note_taker.rhn",
-      _infererenceCallbackDefault,
-      errorCallback: _errorCallback);
+  PicovoiceManager? _picovoiceManager;
 
   // Constructor
   VoiceHelper() {
-    final PicovoiceManager pico = _picovoiceManager;
+    try {
+      _picovoiceManager = PicovoiceManager.create(
+          "assets/ok_so.ppn",
+          _wakeWordCallbackDefault,
+          "assets/note_taker.rhn",
+          _infererenceCallbackDefault,
+          errorCallback: _errorCallback);
+    } catch(ex) {
+      print(ex.toString());
+    }
   }
 
   Future<String> stopPico() async {
-    await _picovoiceManager.stop();
+    await _picovoiceManager!.stop();
     return "pico service stopped";
   }
 
@@ -33,6 +37,7 @@ class VoiceHelper {
 // start the service
   Future<String> startPico(
       dynamic callback(Map<String, dynamic> inference)) async {
+
     await _getWakeWordPath().toString();
 
     if (Platform.isAndroid) {
@@ -50,8 +55,12 @@ class VoiceHelper {
         _WakeWordfileName, _wakeWordCallbackDefault, _RhinoFileName, callback,
         errorCallback: _errorCallback);
 
+
     try {
-      await _picovoiceManager.start();
+      _picovoiceManager = PicovoiceManager.create("assets/ok_so.ppn",
+          _wakeWordCallbackDefault, "assets/note_taker.rhn", callback,
+          errorCallback: _errorCallback);
+      await _picovoiceManager!.start();
       return "pico service started";
     } on PvAudioException catch (ex) {
       // deal with audio exception
@@ -60,6 +69,9 @@ class VoiceHelper {
     } on PvError catch (ex) {
       // deal with Picovoice init error
       print(ex.message);
+      return "pico service could not be started";
+    } catch (ex) {
+      print(ex.toString());
       return "pico service could not be started";
     }
   }

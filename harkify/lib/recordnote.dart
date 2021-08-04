@@ -6,6 +6,9 @@ import 'basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'voicehelper.dart';
 
+
+final recordNoteScaffoldKey = GlobalKey<ScaffoldState>();
+
 class SpeechScreen extends StatefulWidget {
   @override
   _SpeechScreenState createState() => _SpeechScreenState();

@@ -3,9 +3,16 @@ import './notedetails.dart';
 import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+
+import 'package:intl/intl.dart';
+import 'package:file/file.dart';
+import 'package:file/local.dart';
+
 import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+final viewNotesScaffoldKey = GlobalKey<ScaffoldState>();
 
 /// View Notes page
 class ViewNotes extends StatefulWidget {
@@ -29,7 +36,7 @@ class _ViewNotesState extends State<ViewNotes> {
   FlutterTts flutterTts = FlutterTts();
 
   /// Text note service to use for I/O operations against local system
-  final TextNoteService textNoteService = new TextNoteService();
+  TextNoteService textNoteService = new TextNoteService();
 
   // voice helper service
   final VoiceHelper voiceHelper = new VoiceHelper();
@@ -44,15 +51,13 @@ class _ViewNotesState extends State<ViewNotes> {
       readResults = true;
     }
     searchFilter = value;
-    setState(() => _scaffoldKey.currentState);
+    setState(() => viewNotesScaffoldKey.currentState);
   }
 
   // Search has been cleared from search bar
   onCleared() {
     searchFilter = "";
   }
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   _ViewNotesState() {
     searchBar = new SearchBar(
@@ -126,7 +131,7 @@ class _ViewNotesState extends State<ViewNotes> {
           if (textNotes.hasData) {
             readFilterResults();
             return Scaffold(
-              key: _scaffoldKey,
+              key: viewNotesScaffoldKey,
               endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(
