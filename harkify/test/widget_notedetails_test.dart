@@ -39,8 +39,8 @@ void main() {
     // Application should NOT have a menu icon button
     expect(find.byIcon(Icons.menu), findsNothing);
 
-    // Application should have one edit button
-    expect(find.byIcon(Icons.edit), findsOneWidget);
+    // Application should have one save button
+    expect(find.byIcon(Icons.save), findsOneWidget);
 
     // Application should have one delete button
     expect(find.byIcon(Icons.delete), findsOneWidget);
