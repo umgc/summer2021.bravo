@@ -6,7 +6,6 @@ import 'basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'voicehelper.dart';
 
-
 final recordNoteScaffoldKey = GlobalKey<ScaffoldState>();
 
 class SpeechScreen extends StatefulWidget {
@@ -119,7 +118,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
     isFirstTime();
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: recordNoteScaffoldKey,
       endDrawer: BaseMenuDrawer(),
       appBar: AppBar(title: Text('Record a Note')),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
