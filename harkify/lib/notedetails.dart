@@ -15,10 +15,9 @@ class NoteDetails extends StatefulWidget {
 }
 
 class _NoteDetailssState extends State<NoteDetails> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final editController = TextEditingController();
   String edits = "";
-  static final dateFormat = new DateFormat('yyyy-MM-dd\nhh:mm');
+  static final dateFormat = new DateFormat('EEE, MMM d, yyyy\nh:mm a');
 
   /// Text note service to use for I/O operations against local system
   final TextNoteService textNoteService = new TextNoteService();
@@ -53,7 +52,6 @@ class _NoteDetailssState extends State<NoteDetails> {
             editController.text = selectedNote.data?.text ?? "";
 
             return Scaffold(
-              key: _scaffoldKey,
               //drawer: BaseMenuDrawer(),
               appBar: AppBar(title: Text('Notes')),
               body: ListView(
@@ -103,7 +101,7 @@ class _NoteDetailssState extends State<NoteDetails> {
                                   Navigator.pushNamed(context, '/view-notes');
                                 },
                                 child: Icon(
-                                  Icons.edit,
+                                  Icons.save,
                                   color: Colors.blue,
                                   size: 50.0,
                                   semanticLabel: 'Edit Note',
@@ -117,12 +115,7 @@ class _NoteDetailssState extends State<NoteDetails> {
                             children: <Widget>[
                               ElevatedButton(
                                 onPressed: () async {
-                                  textNoteService.deleteTextFile(new TextNote(
-                                      selectedNote.data.fileName,
-                                      selectedNote.data.dateTime,
-                                      edits,
-                                      false));
-                                  Navigator.pushNamed(context, '/view-notes');
+                                  showAlertDialog(context, selectedNote);
                                 },
                                 child: Icon(
                                   Icons.delete,
@@ -159,5 +152,55 @@ class _NoteDetailssState extends State<NoteDetails> {
             return CircularProgressIndicator();
           }
         });
+  }
+
+//This alert dialog runs when Delete buttion is selected
+  showAlertDialog(BuildContext context, selectedNote) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(fontSize: 20),
+      ),
+      onPressed: () {
+        //closes popup
+        Navigator.of(context).pop();
+      },
+    );
+    Widget confirmButton = TextButton(
+      child: Text(
+        "Confirm",
+        style: TextStyle(fontSize: 20),
+      ),
+      onPressed: () {
+        textNoteService.deleteTextFile(new TextNote(selectedNote.data.fileName,
+            selectedNote.data.dateTime, edits, false));
+        //closing the popup here may not be neccessary
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/view-notes');
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "Confirm Note Deletion",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+      content: Text(
+        "Are you sure you want to delete this note?",
+        style: TextStyle(fontSize: 20),
+      ),
+      actions: [
+        cancelButton,
+        confirmButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

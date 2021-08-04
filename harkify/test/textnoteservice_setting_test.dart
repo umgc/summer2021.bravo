@@ -20,7 +20,8 @@ void main() {
 
   test('Setting should be saved', () async {
     prepForTests();
-    String filename = await textNoteService.saveSettings(new Setting("1", "2"));
+    String filename =
+        await textNoteService.saveSettings(new Setting("1", "2", ""));
 
     File newFile = fileSystem.file('$filename');
     bool newFileExists = await newFile.exists();
@@ -32,7 +33,7 @@ void main() {
 
   test('Setting should be retrieved', () async {
     prepForTests();
-    await textNoteService.saveSettings(new Setting("1", "2"));
+    await textNoteService.saveSettings(new Setting("1", "2", ""));
 
     Setting setting = await textNoteService.getSettings();
 
@@ -43,7 +44,7 @@ void main() {
 
   test('Setting should be updated', () async {
     prepForTests();
-    await textNoteService.saveSettings(new Setting("1", "2"));
+    await textNoteService.saveSettings(new Setting("1", "2", ""));
 
     Setting setting = await textNoteService.getSettings();
     setting.daysToKeepFiles = "3";

@@ -18,6 +18,7 @@ class BaseMenuDrawer extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: backgroundColor,
                 ),
+                margin: EdgeInsets.all(0.0),
                 child: Text('Menu', style: TextStyle(color: Colors.white)),
               )),
           ListTile(

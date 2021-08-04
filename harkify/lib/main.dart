@@ -9,8 +9,8 @@ import 'settings.dart';
 import 'savePersonalDetail.dart';
 import 'personalDetails.dart';
 import 'personalDetail.dart';
+import 'recordVoice.dart';
 import 'textnoteservice.dart';
-
 
 
 void main() {
@@ -32,10 +32,7 @@ class MyApp extends StatelessWidget {
         // This is the theme of your application.
         primarySwatch: Colors.deepPurple,
       ),
-
-      //left this for convenience of reviewer, needs to be changed
       initialRoute: '/record-notes',
-
       routes: {
         '/save-note': (context) => SaveNote(),
         '/save-detail': (context) => SavePersonalDetail(),
@@ -46,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/view-detail': (context) => ViewPersonalDetail(),
         '/settings': (context) => settingsPage(),
         '/help': (context) => HelpPage(),
+        '/create-profile': (context) => CreateProfile(),
       },
     );
   }

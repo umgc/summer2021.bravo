@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'voicehelper.dart';
-
 
 final recordNoteScaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -14,7 +14,7 @@ class SpeechScreen extends StatefulWidget {
 }
 
 class _SpeechScreenState extends State<SpeechScreen> {
-  final SpeechToText _speech = SpeechToText();
+  SpeechToText _speech = SpeechToText();
 
   bool _isListening = false;
   String _textSpeech = 'Press the mic button to start';
@@ -25,12 +25,30 @@ class _SpeechScreenState extends State<SpeechScreen> {
   // voice helper service
   final VoiceHelper voiceHelper = new VoiceHelper();
 
+  Future<bool> isFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('first_time') ?? true;
+
+    if (!isFirstTime) {
+      prefs.setBool('first_time', false);
+      print('Not the first time here');
+      return false;
+    } else {
+      prefs.setBool('first_time', false);
+      Navigator.pushNamed(context, '/create-profile');
+      return true;
+    }
+  }
+
   void onListen() async {
     if (!_isListening) {
       voiceHelper.stopPico();
+      _textSpeech = "";
 
       bool available = await _speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
+        onStatus: (val) => {
+          if (val == 'notListening') {print('onStatus: $val')}
+        },
         onError: (val) => print('onError: $val'),
         debugLogging: true,
       );
@@ -65,16 +83,27 @@ class _SpeechScreenState extends State<SpeechScreen> {
         voiceHelper.stopPico();
         onListen();
       }
+      if (inference['intent'] == 'searchNotes') {
+        print('Searching notes');
+        Navigator.pushNamed(context, '/view-notes');
+      }
+      if (inference['intent'] == 'searchDetails') {
+        print('Searching for personal detail');
+        Navigator.pushNamed(context, '/view-details');
+      }
     } else {
-      // TODO handle not inferring
-      print('did not understand');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Sorry, I did not understand'),
+          backgroundColor: Colors.deepOrange,
+          duration: const Duration(seconds: 1)));
     }
   }
 
   @override
   void initState() {
     super.initState();
-    final SpeechToText _speech = SpeechToText();
+    _isListening = false;
+    _speech = SpeechToText();
   }
 
   @override
@@ -84,6 +113,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
     } else {
       voiceHelper.stopPico();
     }
+
+    isFirstTime();
 
     return Scaffold(
       key: recordNoteScaffoldKey,

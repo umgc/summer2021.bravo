@@ -17,6 +17,9 @@ class ViewPersonalDetails extends StatefulWidget {
 }
 
 class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
+  // flag to indicate if a voice search was performed
+  bool voiceSearch = false;
+
   // flag for speech
   bool readResults = false;
 
@@ -37,7 +40,10 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
 
   /// Search is submitted from search bar
   onSubmitted(value) {
-    readResults = true;
+    if (voiceSearch) {
+      voiceSearch = false;
+      readResults = true;
+    }
     searchFilter = value;
     setState(() => personalDetailsScaffoldKey.currentState);
   }
@@ -74,19 +80,36 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
     if (inference['isUnderstood']) {
       if (inference['intent'] == 'searchDetails') {
         print('Searching for: ' + inference['slots']['info']);
+        voiceSearch = true;
         onSubmitted(inference['slots']['info'].toString());
       }
+      if (inference['intent'] == 'startTranscription') {
+        print('start recording');
+        Navigator.pushNamed(context, '/record-notes');
+      }
+      if (inference['intent'] == 'searchNotes') {
+        print('Searching for: ' + inference['slots']['date']);
+        Navigator.pushNamed(context, '/view-notes');
+      }
     } else {
-      // TODO handle not inferring
-      print('did not understand');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('Sorry, I did not understand'),
+          backgroundColor: Colors.deepOrange,
+          duration: const Duration(seconds: 1)));
     }
   }
 
-  Future readFilterResults(String theFoundValue) async {
-    if (readResults) {
-      var result = await flutterTts
-          .speak("Your " + searchFilter + " is " + theFoundValue);
-      readResults = false;
+  Future readFilterResults() async {
+    List<dynamic> personalDetails =
+        await textNoteService.getPersonalDetailList(searchFilter);
+    if (!personalDetails.isEmpty) {
+      if (readResults) {
+        for (PersonalDetail detail in personalDetails) {
+          readResults = false;
+          await flutterTts
+              .speak("Your " + searchFilter + " is " + detail.value.toString());
+        }
+      }
     }
   }
 
@@ -98,9 +121,8 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetails> {
         future: textNoteService.getPersonalDetailList(searchFilter),
         builder: (context, AsyncSnapshot<List<dynamic>> personalDetails) {
           if (personalDetails.hasData) {
-            for (var detail in personalDetails.data ?? []) {
-              readFilterResults(detail.value);
-            }
+            readFilterResults();
+
             return Scaffold(
               key: personalDetailsScaffoldKey,
               endDrawer: BaseMenuDrawer(),
