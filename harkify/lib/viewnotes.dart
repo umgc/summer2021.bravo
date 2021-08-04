@@ -4,10 +4,6 @@ import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 
-import 'package:intl/intl.dart';
-import 'package:file/file.dart';
-import 'package:file/local.dart';
-
 import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:timeago/timeago.dart' as timeago;
