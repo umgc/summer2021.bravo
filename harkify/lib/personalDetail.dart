@@ -14,7 +14,6 @@ class ViewPersonalDetail extends StatefulWidget {
 }
 
 class _ViewPersonalDetailsState extends State<ViewPersonalDetail> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final editController = TextEditingController();
   String edits = "";
 
@@ -51,7 +50,6 @@ class _ViewPersonalDetailsState extends State<ViewPersonalDetail> {
             editController.text = selectedDetail.data?.value ?? "";
 
             return Scaffold(
-              key: _scaffoldKey,
               //drawer: BaseMenuDrawer(),
               appBar: AppBar(title: Text('Personal Detail')),
               body: ListView(
