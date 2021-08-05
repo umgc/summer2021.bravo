@@ -23,7 +23,7 @@ class TextNoteService {
   Future<Directory> _getTextNotesDirectory() async {
     var docsDirectory = fileSystem.directory(".");
 
-    try {
+    /*try {
       if (fileSystem is LocalFileSystem) {
         // Docs folder only available for Android and IOS, not unit tests
         var docsPath = (await getApplicationDocumentsDirectory()).path;
@@ -34,7 +34,7 @@ class TextNoteService {
         notesDirectory.createSync();
         return notesDirectory;
       }
-    } catch (MissingPluginException) {}
+    } catch (MissingPluginException) {}*/
 
     return docsDirectory;
   }
