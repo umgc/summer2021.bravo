@@ -85,6 +85,7 @@ flutter:
     - assets/iOS/I_see_so.ppn
     - assets/iOS/alright_then.ppn
     - assets/iOS/note_taker.rhn
+    - assets/harkifylogo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

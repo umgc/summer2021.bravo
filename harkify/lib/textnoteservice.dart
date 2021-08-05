@@ -29,8 +29,7 @@ class TextNoteService {
         var docsPath = (await getApplicationDocumentsDirectory()).path;
         docsDirectory = fileSystem.directory(docsPath);
 
-        final notesDirectory =
-            fileSystem.directory('${docsDirectory.path}/harkify');
+        final notesDirectory = fileSystem.directory('${docsDirectory.path}');
         notesDirectory.createSync();
         return notesDirectory;
       }
