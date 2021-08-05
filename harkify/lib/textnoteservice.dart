@@ -23,18 +23,19 @@ class TextNoteService {
   Future<Directory> _getTextNotesDirectory() async {
     var docsDirectory = fileSystem.directory(".");
 
-    try {
+    /*try {
       if (fileSystem is LocalFileSystem) {
         // Docs folder only available for Android and IOS, not unit tests
         var docsPath = (await getApplicationDocumentsDirectory()).path;
         docsDirectory = fileSystem.directory(docsPath);
 
-        final notesDirectory = fileSystem.directory('${docsDirectory.path}');
+        final notesDirectory =
+            fileSystem.directory('${docsDirectory.path}/harkify');
         notesDirectory.createSync();
         return notesDirectory;
       }
     } catch (MissingPluginException) {}
-
+*/
     return docsDirectory;
   }
 
