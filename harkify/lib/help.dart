@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import "package:youtube_player_flutter/youtube_player_flutter.dart";
 import 'basemenudrawer.dart';
 
-
-final helpScaffoldKey = GlobalKey<ScaffoldState>();
+//final helpScaffoldKey = GlobalKey<ScaffoldState>();
 
 class HelpPage extends StatefulWidget {
   final String title = "Help Page";
@@ -56,7 +55,7 @@ class _HelpPageState extends State<HelpPage> {
         ),
         builder: (context, player) {
           return Scaffold(
-            key: helpScaffoldKey,
+            //key: helpScaffoldKey,
             endDrawer: BaseMenuDrawer(),
             appBar: AppBar(
               title: Text(widget.title),
