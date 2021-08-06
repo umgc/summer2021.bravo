@@ -10,14 +10,8 @@ import 'savePersonalDetail.dart';
 import 'personalDetails.dart';
 import 'personalDetail.dart';
 import 'recordVoice.dart';
-import 'textnoteservice.dart';
-
 
 void main() {
-  // Purge old notes before starting up application
-  final TextNoteService textNoteService = new TextNoteService();
-  textNoteService.purgeOldNotes();
-
   runApp(MyApp());
 }
 

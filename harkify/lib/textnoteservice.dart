@@ -14,10 +14,10 @@ class TextNoteService {
 
   /// The file system to use for all I/O operations. Generally LocalFileSystem()
   /// but MemoryFileSystem() is used when running unit tests.
-  static FileSystem fileSystem = const LocalFileSystem();
+  FileSystem fileSystem;
 
-  /// Constructor
-  TextNoteService();
+  /// Constructor initializes FileSystem
+  TextNoteService({this.fileSystem = const LocalFileSystem()});
 
   /// Returns the correct file directory for all text notes
   Future<Directory> _getTextNotesDirectory() async {
@@ -452,26 +452,6 @@ class TextNoteService {
     }
     // no need to sort this, just return the list
     return personalDetailList;
-  }
-
-  /// Purge old notes that no longer need to be kept
-  purgeOldNotes() async {
-    Setting setting = await getSettings();
-    int daysTillPurge = int.parse(setting.daysToKeepFiles ?? "7");
-
-    // Cycle through all notes
-    List<dynamic> textNotes = await getTextFileList("");
-    for (TextNote note in textNotes) {
-      // Without a date, we'll assume the note should stick around
-      DateTime purgeDate =
-          note.dateTime?.add(new Duration(days: daysTillPurge)) ??
-              DateTime.now().add(new Duration(days: 1));
-
-      // Is this note too old?
-      if (purgeDate.compareTo(DateTime.now()) < 0) {
-        await deleteTextFile(note);
-      }
-    }
   }
 }
 

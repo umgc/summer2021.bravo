@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import './basemenudrawer.dart';
 import 'textnoteservice.dart';
 
-
-final saveNoteScaffoldKey = GlobalKey<ScaffoldState>();
+//final saveNoteScaffoldKey = GlobalKey<ScaffoldState>();
 
 /// Save Note page
 class SaveNote extends StatefulWidget {
@@ -29,7 +28,7 @@ class _SaveNoteState extends State<SaveNote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: saveNoteScaffoldKey,
+      //key: saveNoteScaffoldKey,
       endDrawer: BaseMenuDrawer(),
       appBar: new AppBar(
         title: new Text('Save Note'),

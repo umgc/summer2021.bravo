@@ -6,7 +6,7 @@ import 'basemenudrawer.dart';
 
 class HelpPage extends StatefulWidget {
   final String title = "Help Page";
-  final url = YoutubePlayer.convertUrlToId("https://youtu.be/4-hzM-oiqps");
+  final url = YoutubePlayer.convertUrlToId("https://youtu.be/pxt7YZfGE94");
   HelpPage({title, url});
 
   @override
@@ -16,7 +16,7 @@ class HelpPage extends StatefulWidget {
 class _HelpPageState extends State<HelpPage> {
   YoutubePlayerController _controller = YoutubePlayerController(
       initialVideoId:
-          YoutubePlayer.convertUrlToId("https://youtu.be/4-hzM-oiqps")
+          YoutubePlayer.convertUrlToId("https://youtu.be/pxt7YZfGE94")
               .toString());
 
   void runYoutubePlayer() {

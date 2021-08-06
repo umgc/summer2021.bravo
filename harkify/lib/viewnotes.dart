@@ -8,8 +8,6 @@ import 'voicehelper.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-final viewNotesScaffoldKey = GlobalKey<ScaffoldState>();
-
 /// View Notes page
 class ViewNotes extends StatefulWidget {
   const ViewNotes({Key? key}) : super(key: key);
@@ -40,6 +38,8 @@ class _ViewNotesState extends State<ViewNotes> {
   /// Value of search filter to be used in filtering search results
   String searchFilter = "";
 
+  final _viewNotesScaffoldKey = GlobalKey<ScaffoldState>();
+
   /// Search is submitted from search bar
   onSubmitted(value) {
     if (voiceSearch) {
@@ -47,7 +47,7 @@ class _ViewNotesState extends State<ViewNotes> {
       readResults = true;
     }
     searchFilter = value;
-    setState(() => viewNotesScaffoldKey.currentState);
+    setState(() => _viewNotesScaffoldKey.currentState);
   }
 
   // Search has been cleared from search bar
@@ -127,7 +127,7 @@ class _ViewNotesState extends State<ViewNotes> {
           if (textNotes.hasData) {
             readFilterResults();
             return Scaffold(
-              key: viewNotesScaffoldKey,
+              key: _viewNotesScaffoldKey,
               endDrawer: BaseMenuDrawer(),
               appBar: searchBar.build(context),
               body: Container(
